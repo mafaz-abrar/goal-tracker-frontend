@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  width: 80%;
+  border: solid 1px red;
+}
+
+.dataItem {
+  padding: 10px;
+  border: solid 1px blue;
+}
+
+.special {
+  width: 1000px;
+}
