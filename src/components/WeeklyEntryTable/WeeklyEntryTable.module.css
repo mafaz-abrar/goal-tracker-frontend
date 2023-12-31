@@ -1,27 +1,13 @@
-.container {
-  display: flex;
-  width: 90vw;
-  /* border: solid 1px red; */
-  margin-left: auto;
-  margin-right: auto;
-  border-bottom: solid 1px gray;
-  border-top: solid 1px gray;
-
-}
-
 .dataItem {
-  padding: 10px;
-  /* border: solid 1px blue; */
-  width: 10vw;
+  width: 10%;
+  color: rgba(25, 118, 210, 1);
+  text-align: center;
 }
 
 .nameItem {
-  width: 40vw;
-  padding: 10px;
-  text-align: left;
-  /* border: solid 1px green; */
+  width: 40%;
 }
 
-.targetingItem {
-  background-color: red;
+.headerCell {
+  color: white;
 }

@@ -1,17 +1,18 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Blogs from './pages/Blogs';
-import Contact from './pages/Contact';
+import NavBar from './components/NavBar/NavBar';
+import GoalsAndActivities from './pages/GoalsAndActivities';
 import Home from './pages/Home';
-import NoPage from './pages/NoPage';
+import PageNotFound from './pages/PageNotFound';
 
 export default function App() {
   return (
-    <BrowserRouter basename='/goal-tracker-frontend'>
+    <BrowserRouter>
       <Routes>
-        <Route index element={<Home />} />
-        <Route path='blogs' element={<Blogs />} />
-        <Route path='contact' element={<Contact />} />
-        <Route path='*' element={<NoPage />} />
+        <Route path='/' element={<NavBar />}>
+          <Route index element={<Home />} />
+          <Route path='goals' element={<GoalsAndActivities />} />
+          <Route path='*' element={<PageNotFound />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

@@ -1,15 +1,20 @@
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableContainer from '@mui/material/TableContainer';
 import { WeeklyEntry } from '../../api/types';
-import WeeklyEntryHeader from './WeeklyEntryHeader/WeeklyEntryHeader';
-import WeeklyEntryRow from './WeeklyEntryRow/WeeklyEntryRow';
+import WeeklyEntryHeader from './WeeklyEntryHeader';
+import WeeklyEntryRow from './WeeklyEntryRow';
 
 interface WeeklyEntryTableProps {
   weeklyEntries: WeeklyEntry[];
+  style: React.CSSProperties;
 }
 
 export default function WeeklyEntryTable({
   weeklyEntries,
+  style,
 }: WeeklyEntryTableProps) {
-  // Sort by targeting
+  // Sort by targeting, then goal name, finally activity name.
   weeklyEntries.sort((first, second) => {
     let secondMinusFirst = 0;
     secondMinusFirst =
@@ -27,11 +32,13 @@ export default function WeeklyEntryTable({
   });
 
   return (
-    <div>
-      <WeeklyEntryHeader />
-      {weeklyEntries.map((weeklyEntry) => (
-        <WeeklyEntryRow weeklyEntry={weeklyEntry} />
-      ))}
-    </div>
+    <TableContainer component={Paper} sx={style}>
+      <Table>
+        <WeeklyEntryHeader />
+        {weeklyEntries.map((weeklyEntry) => (
+          <WeeklyEntryRow weeklyEntry={weeklyEntry} />
+        ))}
+      </Table>
+    </TableContainer>
   );
 }
