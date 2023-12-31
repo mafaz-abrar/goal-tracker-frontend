@@ -1,5 +1,5 @@
 import { WeeklyEntry } from '../../../api/types';
-import styles from '../WeeklyEntryRow.module.css';
+import styles from '../WeeklyEntryTable.module.css';
 
 interface WeeklyEntryProps {
   weeklyEntry: WeeklyEntry;
@@ -7,11 +7,13 @@ interface WeeklyEntryProps {
 
 export default function WeeklyEntryRow({ weeklyEntry }: WeeklyEntryProps) {
   return (
-    <div className={styles.container}>
-      <div className={`${styles.dataItem} ${styles.special}`}>
-        {weeklyEntry.goalName}
-      </div>
-      <div className={styles.dataItem}>{weeklyEntry.activityName}</div>
+    <div
+      className={`${styles.container} ${
+        weeklyEntry.targeting ? styles.targetingItem : ''
+      }`}
+    >
+      <div className={styles.nameItem}>{weeklyEntry.goalName}</div>
+      <div className={styles.nameItem}>{weeklyEntry.activityName}</div>
       <div className={styles.dataItem}>{weeklyEntry.mondayHours}</div>
       <div className={styles.dataItem}>{weeklyEntry.tuesdayHours}</div>
       <div className={styles.dataItem}>{weeklyEntry.wednesdayHours}</div>
@@ -19,6 +21,9 @@ export default function WeeklyEntryRow({ weeklyEntry }: WeeklyEntryProps) {
       <div className={styles.dataItem}>{weeklyEntry.fridayHours}</div>
       <div className={styles.dataItem}>{weeklyEntry.saturdayHours}</div>
       <div className={styles.dataItem}>{weeklyEntry.sundayHours}</div>
+      <div className={styles.dataItem}>
+        <button>Push Me</button>
+      </div>
     </div>
   );
 }

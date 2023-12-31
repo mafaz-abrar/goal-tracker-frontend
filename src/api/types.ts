@@ -3,12 +3,14 @@ export interface WeeklyEntry {
   activityName: string;
   goalId: number;
   goalName: string;
+  targeting: boolean;
+  weighting: number;
 
-  mondayHours: string;
-  tuesdayHours: string;
-  wednesdayHours: string;
-  thursdayHours: string;
-  fridayHours: string;
-  saturdayHours: string;
-  sundayHours: string;
+  mondayHours: string | null;
+  tuesdayHours: string | null;
+  wednesdayHours: string | null;
+  thursdayHours: string | null;
+  fridayHours: string | null;
+  saturdayHours: string | null;
+  sundayHours: string | null;
 }

@@ -1,81 +1,99 @@
+import camelcaseKeysDeep from 'camelcase-keys-deep';
 import { useEffect, useState } from 'react';
 import { API_SERVER } from '../api/config';
 import { WeeklyEntry } from '../api/types';
-import WeeklyEntryTable from '../components/WeeklyEntries/WeeklyEntryTable';
-import logo from '../logo.svg';
+import WeeklyEntryTable from '../components/WeeklyEntryTable/WeeklyEntryTable';
 
 export default function Home() {
-  const [myData, setMyData] = useState('');
-  const [input, setInput] = useState('');
+  const [weeklyEntries, setWeeklyEntries] = useState<WeeklyEntry[]>([]);
+  const [filterDate, setFilterDate] = useState('');
 
   useEffect(() => {
     async function getData() {
-      const res = await fetch(API_SERVER + '/test.php');
-      const data = await res.json();
+      const res = await fetch(API_SERVER + '/main_report.php');
+      const weeklyEntries = camelcaseKeysDeep(await res.json());
 
-      setMyData(data);
+      setWeeklyEntries(weeklyEntries);
     }
 
     getData();
   }, []);
 
-  async function onSubmit() {
-    const formData = new FormData();
-    formData.append('input', input);
-    const res = await fetch(API_SERVER + '/form_input.php', {
-      method: 'POST',
-      body: formData,
-    });
+  // async function onSubmit() {
+  //   const formData = new FormData();
+  //   formData.append('input', input);
+  //   const res = await fetch(API_SERVER + '/form_input.php', {
+  //     method: 'POST',
+  //     body: formData,
+  //   });
 
-    const resJ = await res.json();
+  //   const resJ = await res.json();
 
-    console.log(resJ);
-  }
+  //   console.log(resJ);
+  // }
 
-  const weeklyEntry: WeeklyEntry = {
-    activityId: 1,
-    activityName: 'activityName',
-    goalId: 1,
-    goalName: 'goalName',
+  // const weeklyEntry1: WeeklyEntry = {
+  //   activityId: 1,
+  //   activityName: 'Do 100 pushups',
+  //   goalId: 1,
+  //   goalName: 'Achieve an ideal body shape',
+  //   targeting: false,
+  //   weighting: 0,
 
-    mondayHours: 'mondayHours',
-    tuesdayHours: 'tuesdayHours',
-    wednesdayHours: 'wednesdayHours',
-    thursdayHours: 'thursdayHours',
-    fridayHours: 'fridayHours',
-    saturdayHours: 'saturdayHours',
-    sundayHours: 'sundayHours',
-  };
+  //   mondayHours: '00:00:00',
+  //   tuesdayHours: '00:15:20',
+  //   wednesdayHours: '00:20:15',
+  //   thursdayHours: '09:00:00',
+  //   fridayHours: '10:20:00',
+  //   saturdayHours: '00:30:00',
+  //   sundayHours: '20:00:00',
+  // };
 
-  const weeklyEntries: WeeklyEntry[] = [weeklyEntry, weeklyEntry];
+  // const weeklyEntry2: WeeklyEntry = {
+  //   activityId: 1,
+  //   activityName: 'Gave in to Mr. Jack',
+  //   goalId: 1,
+  //   goalName:
+  //     'Keep track of my failures and one of those big ones huh what a catch lol who was that',
+  //   targeting: true,
+  //   weighting: 1,
+
+  //   mondayHours: '20:00:00',
+  //   tuesdayHours: '00:30:00',
+  //   wednesdayHours: '10:45:00',
+  //   thursdayHours: '45:00:20',
+  //   fridayHours: '09:10:00',
+  //   saturdayHours: '',
+  //   sundayHours: '',
+  // };
+
+  // const weeklyEntry3: WeeklyEntry = {
+  //   activityId: 1,
+  //   activityName: 'Do 300 pushups',
+  //   goalId: 1,
+  //   goalName: 'Achieve an ideal body shape',
+  //   targeting: true,
+  //   weighting: -1,
+
+  //   mondayHours: '00:00:00',
+  //   tuesdayHours: '00:15:20',
+  //   wednesdayHours: '00:20:15',
+  //   thursdayHours: '09:00:00',
+  //   fridayHours: '10:20:00',
+  //   saturdayHours: '00:30:00',
+  //   sundayHours: '20:00:00',
+  // };
+
+  // const weeklyEntries: WeeklyEntry[] = [
+  //   weeklyEntry1,
+  //   weeklyEntry2,
+  //   weeklyEntry3,
+  // ];
 
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          {myData}
-        </a>
-      </header>
-
-      <input
-        type='text'
-        onChange={(e) => {
-          setInput(e.target.value);
-        }}
-      />
-      <button onClick={onSubmit}>Submit</button>
-
-      <div className='container'>Hello</div>
-
+    <div style={{ textAlign: 'center' }}>
+      <h1 style={{ textAlign: 'center' }}>Goal Tracker</h1>
+      <input style={{ marginTop: '20px', marginBottom: '20px' }} type='date' />
       <WeeklyEntryTable weeklyEntries={weeklyEntries} />
     </div>
   );

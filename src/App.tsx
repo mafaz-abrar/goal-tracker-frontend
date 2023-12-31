@@ -1,28 +1,18 @@
-import React from 'react';
-import './App.css';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './pages/Layout';
-import Home from './pages/Home';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Blogs from './pages/Blogs';
 import Contact from './pages/Contact';
+import Home from './pages/Home';
 import NoPage from './pages/NoPage';
 
-function App() {
-  const a = 0;
-
+export default function App() {
   return (
     <BrowserRouter basename='/goal-tracker-frontend'>
       <Routes>
-        <Route path='/' element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path='blogs' element={<Blogs />} />
-          <Route path='contact' element={<Contact />} />
-          <Route path='*' element={<NoPage />} />
-        </Route>
+        <Route index element={<Home />} />
+        <Route path='blogs' element={<Blogs />} />
+        <Route path='contact' element={<Contact />} />
+        <Route path='*' element={<NoPage />} />
       </Routes>
     </BrowserRouter>
   );
 }
-
-export default App;
