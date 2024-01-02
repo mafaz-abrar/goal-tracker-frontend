@@ -1,10 +1,9 @@
 import Button from '@mui/material/Button';
-import { goalsTest } from '../api/test-data';
-import GoalsAndActivitiesTableGroup from '../components/GoalsAndActivitiesTableGroup/GoalsAndActivitiesTableGroup';
 
-export default function GoalsAndActivities() {
+export default function Entries() {
   return (
     <div>
+      {' '}
       <div
         style={{
           display: 'flex',
@@ -22,25 +21,16 @@ export default function GoalsAndActivities() {
             fontFamily: 'Nunito',
           }}
         >
-          Goals and Activities
+          My Entries
         </h1>
         <Button
           sx={{
             height: '7vh',
           }}
         >
-          Add Goal
+          Add Entry
         </Button>
       </div>
-
-      <GoalsAndActivitiesTableGroup
-        goals={goalsTest}
-        style={{
-          width: '80%',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-        }}
-      />
     </div>
   );
 }

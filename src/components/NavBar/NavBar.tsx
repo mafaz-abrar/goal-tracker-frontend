@@ -30,21 +30,55 @@ export default function NavBar() {
           GoalTracker
         </Link>
 
-        <Link to='/goals'>
-          <Button
-            sx={{
-              color: 'white',
-              fontFamily: 'Nunito',
-              fontWeight: '1000',
-              '&:hover': {
-                color: 'rgba(180,180,180,1)',
-              },
-            }}
-            variant='outlined'
-          >
-            Goals and Activities
-          </Button>
-        </Link>
+        <div>
+          <Link to='/'>
+            <Button
+              sx={{
+                color: 'white',
+                fontFamily: 'Nunito',
+                fontWeight: '1000',
+                '&:hover': {
+                  color: 'rgba(180,180,180,1)',
+                },
+              }}
+              variant='text'
+            >
+              My Week
+            </Button>
+          </Link>
+
+          <Link to='/entries'>
+            <Button
+              sx={{
+                color: 'white',
+                fontFamily: 'Nunito',
+                fontWeight: '1000',
+                '&:hover': {
+                  color: 'rgba(180,180,180,1)',
+                },
+              }}
+              variant='text'
+            >
+              My Entries
+            </Button>
+          </Link>
+
+          <Link to='/goals'>
+            <Button
+              sx={{
+                color: 'white',
+                fontFamily: 'Nunito',
+                fontWeight: '1000',
+                '&:hover': {
+                  color: 'rgba(180,180,180,1)',
+                },
+              }}
+              variant='text'
+            >
+              Goals and Activities
+            </Button>
+          </Link>
+        </div>
       </nav>
 
       <Outlet />

@@ -48,7 +48,7 @@ export default function Home() {
           }}
           onClick={handleOpen}
         >
-          +Add Entry
+          Add Entry
         </Button>
       </div>
       <WeeklyEntryTable
