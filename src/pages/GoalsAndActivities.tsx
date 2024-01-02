@@ -1,4 +1,6 @@
 import Button from '@mui/material/Button';
+import { goalsTest } from '../api/test-data';
+import GoalsAndActivitiesTableGroup from '../components/GoalsAndActivitiesTableGroup/GoalsAndActivitiesTableGroup';
 
 export default function GoalsAndActivities() {
   return (
@@ -30,6 +32,15 @@ export default function GoalsAndActivities() {
           +Add Goal
         </Button>
       </div>
+
+      <GoalsAndActivitiesTableGroup
+        goals={goalsTest}
+        style={{
+          width: '80%',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}
+      />
     </div>
   );
 }

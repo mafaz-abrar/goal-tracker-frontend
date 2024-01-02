@@ -1,7 +1,7 @@
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
-import { WeeklyEntry } from '../../api/types';
+import { WeeklyEntry } from '../../api/api-interface';
 import WeeklyEntryHeader from './WeeklyEntryHeader';
 import WeeklyEntryRow from './WeeklyEntryRow';
 

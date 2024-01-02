@@ -1,8 +1,8 @@
 import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
 import { useEffect, useState } from 'react';
+import { WeeklyEntry } from '../api/api-interface';
 import { weeklyEntriesTestData } from '../api/test-data';
-import { WeeklyEntry } from '../api/types';
+import AddEntryDialog from '../components/Modals/AddEntryDialog/AddEntryDialog';
 import WeeklyEntryTable from '../components/WeeklyEntryTable/WeeklyEntryTable';
 
 export default function Home() {
@@ -15,9 +15,6 @@ export default function Home() {
 
   useEffect(() => {
     async function getData() {
-      // const res = await fetch(API_SERVER + '/main_report.php');
-      // const weeklyEntries = camelcaseKeysDeep(await res.json());
-
       setWeeklyEntries(weeklyEntriesTestData);
     }
 
@@ -49,6 +46,7 @@ export default function Home() {
           sx={{
             height: '7vh',
           }}
+          onClick={handleOpen}
         >
           +Add Entry
         </Button>
@@ -58,9 +56,7 @@ export default function Home() {
         style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}
       />
 
-      <Modal open={open} onClose={handleClose}>
-        <div style={{ backgroundColor: 'red' }}>Hello</div>
-      </Modal>
+      <AddEntryDialog open={open} onClose={handleClose} />
     </div>
   );
 }

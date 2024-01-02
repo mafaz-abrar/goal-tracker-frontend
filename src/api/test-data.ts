@@ -1,4 +1,4 @@
-import { WeeklyEntry } from './types';
+import { Activity, Goal, WeeklyEntry } from './api-interface';
 
 const weeklyEntry1: WeeklyEntry = {
   activityId: 1,
@@ -58,3 +58,27 @@ export const weeklyEntriesTestData: WeeklyEntry[] = [
   weeklyEntry2,
   weeklyEntry3,
 ];
+
+const activity1: Activity = {
+  activityId: 1,
+  goalId: 0,
+  activityName: 'first activity',
+  targeting: true,
+  weighting: 3,
+};
+
+const activity2: Activity = {
+  activityId: 1,
+  goalId: 0,
+  activityName: 'first activity',
+  targeting: false,
+  weighting: 3,
+};
+
+export const goalTest: Goal = {
+  goalId: 0,
+  goalName: 'first goal',
+  activities: [activity1, activity2],
+};
+
+export const goalsTest: Goal[] = [goalTest, goalTest];

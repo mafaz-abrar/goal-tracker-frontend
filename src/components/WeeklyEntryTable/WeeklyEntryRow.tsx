@@ -1,8 +1,10 @@
 import AddIcon from '@mui/icons-material/Add';
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { WeeklyEntry } from '../../api/types';
+import { WeeklyEntry } from '../../api/api-interface';
+import GoalTrackerDisabledIcon from '../../assets/GoalTrackerDisabledIcon.png';
 import GoalTrackerIcon from '../../assets/GoalTrackerIcon.png';
 import styles from './WeeklyEntryTable.module.css';
 
@@ -14,15 +16,21 @@ export default function WeeklyEntryRow({ weeklyEntry }: WeeklyEntryProps) {
   return (
     <TableRow>
       <TableCell>
-        {weeklyEntry.targeting ? (
-          <img
-            src={GoalTrackerIcon}
-            alt='targeting'
-            style={{ width: '20px', height: '20px' }}
-          />
-        ) : (
-          ''
-        )}
+        <Button>
+          {weeklyEntry.targeting ? (
+            <img
+              src={GoalTrackerIcon}
+              alt='targeting'
+              style={{ width: '20px', height: '20px' }}
+            />
+          ) : (
+            <img
+              src={GoalTrackerDisabledIcon}
+              alt='not targeting'
+              style={{ width: '20px', height: '20px' }}
+            />
+          )}
+        </Button>
       </TableCell>
       <TableCell className={styles.nameItem}>{weeklyEntry.goalName}</TableCell>
       <TableCell className={styles.nameItem}>
