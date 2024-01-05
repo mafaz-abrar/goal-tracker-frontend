@@ -3,7 +3,7 @@ import GoalTable from './GoalTable';
 
 interface GoalsAndActivitiesTableGroupProps {
   goals: Goal[];
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
 }
 
 export default function GoalsAndActivitiesTableGroup({

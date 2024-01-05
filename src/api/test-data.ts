@@ -30,9 +30,6 @@ const weeklyEntry2: WeeklyEntry = {
   tuesdayHours: '00:30:00',
   wednesdayHours: '10:45:00',
   thursdayHours: '45:00:20',
-  fridayHours: '09:10:00',
-  saturdayHours: '',
-  sundayHours: '',
 };
 
 const weeklyEntry3: WeeklyEntry = {
@@ -45,10 +42,7 @@ const weeklyEntry3: WeeklyEntry = {
   weighting: -1,
 
   mondayHours: '00:00:00',
-  tuesdayHours: '',
-  wednesdayHours: null,
   thursdayHours: '09:00:00',
-  fridayHours: null,
   saturdayHours: '00:30:00',
   sundayHours: '20:00:00',
 };
@@ -62,17 +56,33 @@ export const weeklyEntriesTestData: WeeklyEntry[] = [
 const activity1: Activity = {
   activityId: 1,
   goalId: 0,
-  activityName: 'first activity',
+  activityName: 'first activity: get up early every day',
   targeting: true,
   weighting: 3,
 };
 
 const activity2: Activity = {
-  activityId: 1,
+  activityId: 2,
   goalId: 0,
-  activityName: 'first activity',
+  activityName: 'second activity: brush my teeth',
   targeting: false,
   weighting: 3,
+};
+
+const activity3: Activity = {
+  activityId: 3,
+  goalId: 0,
+  activityName: 'third activity: eat 3 meals a day',
+  targeting: false,
+  weighting: 5,
+};
+
+const activity4: Activity = {
+  activityId: 4,
+  goalId: 0,
+  activityName: 'fourth activity: remind Junayed everything',
+  targeting: true,
+  weighting: 5,
 };
 
 export const goalTest: Goal = {
@@ -81,4 +91,10 @@ export const goalTest: Goal = {
   activities: [activity1, activity2],
 };
 
-export const goalsTest: Goal[] = [goalTest, goalTest];
+export const goalTest2: Goal = {
+  goalId: 1,
+  goalName: 'second goal',
+  activities: [activity3, activity4],
+};
+
+export const goalsTest: Goal[] = [goalTest, goalTest2];

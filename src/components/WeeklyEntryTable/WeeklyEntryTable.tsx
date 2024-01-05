@@ -7,7 +7,7 @@ import WeeklyEntryRow from './WeeklyEntryRow';
 
 interface WeeklyEntryTableProps {
   weeklyEntries: WeeklyEntry[];
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
 }
 
 export default function WeeklyEntryTable({

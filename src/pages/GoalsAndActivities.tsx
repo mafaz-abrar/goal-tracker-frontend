@@ -1,9 +1,40 @@
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { useState } from 'react';
+import { Goal } from '../api/api-interface';
 import { goalsTest } from '../api/test-data';
 import GoalsAndActivitiesTableGroup from '../components/GoalsAndActivitiesTableGroup/GoalsAndActivitiesTableGroup';
 
+function filterGoalsBySearchTerm(goals: Goal[], searchTerm: string): Goal[] {
+  if (searchTerm.toLowerCase() === '') {
+    return goals;
+  }
+
+  const goalsWithMatchingActivities = goals
+    .map((goal) => {
+      const filteredActivities = goal.activities.filter((activity) =>
+        activity.activityName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      return {
+        goalId: goal.goalId,
+        goalName: goal.goalName,
+        activities: filteredActivities,
+      };
+    })
+    .filter((goal) => goal.activities.length);
+
+  if (goalsWithMatchingActivities.length !== 0)
+    return goalsWithMatchingActivities;
+
+  return goals.filter((goal) =>
+    goal.goalName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+}
+
 export default function GoalsAndActivities() {
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
   return (
     <div
       style={{
@@ -38,9 +69,18 @@ export default function GoalsAndActivities() {
           Add Goal
         </Button>
       </div>
-      <TextField variant='outlined' label='Search' fullWidth />
+      <TextField
+        variant='outlined'
+        label='Search'
+        fullWidth
+        onChange={(event) => {
+          setSearchTerm(event.target.value);
+        }}
+      />
 
-      <GoalsAndActivitiesTableGroup goals={goalsTest} style={{}} />
+      <GoalsAndActivitiesTableGroup
+        goals={filterGoalsBySearchTerm(goalsTest, searchTerm)}
+      />
     </div>
   );
 }

@@ -1,25 +1,10 @@
 import camelcaseKeysDeep from 'camelcase-keys-deep';
 
-export interface WeeklyEntry {
-  activityId: number;
-  activityName: string;
-  goalId: number;
-  goalName: string;
-  targeting: boolean;
-  weighting: number;
-
-  mondayHours: string | null;
-  tuesdayHours: string | null;
-  wednesdayHours: string | null;
-  thursdayHours: string | null;
-  fridayHours: string | null;
-  saturdayHours: string | null;
-  sundayHours: string | null;
-}
+const API_SERVER = new URL('http://goal-tracker-backend');
 
 export interface Entry {
   entryId: number;
-  date: Date;
+  date: string; // pushed from backend as string
   activityId: number;
   taskDescription: string;
   hoursSpent: string; // pushed from backend as string
@@ -41,7 +26,33 @@ export interface Goal {
   activities: Activity[];
 }
 
-const API_SERVER = new URL('http://goal-tracker-backend');
+// The backend may not push hour variables for hours that don't have entries, instead of pushing ''
+// for those hours.
+export interface WeeklyEntry {
+  activityId: number;
+  activityName: string;
+  goalId: number;
+  goalName: string;
+  targeting: boolean;
+  weighting: number;
+
+  mondayHours?: string;
+  tuesdayHours?: string;
+  wednesdayHours?: string;
+  thursdayHours?: string;
+  fridayHours?: string;
+  saturdayHours?: string;
+  sundayHours?: string;
+}
+
+export interface EntryWithActivity {
+  activityName: string;
+  taskDescription: string;
+  date: string;
+  hoursSpent: string;
+  startTime: string;
+  endTime: string;
+}
 
 export async function getWeeklyEntries(): Promise<WeeklyEntry[]> {
   const response = await fetch(

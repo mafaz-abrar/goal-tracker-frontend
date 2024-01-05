@@ -69,7 +69,7 @@ export default function Home() {
             setFilterDate(filterDate.subtract(7, 'day'));
           }}
         >
-          Prev
+          Prev Week
         </Button>
         <input
           type='date'
@@ -92,7 +92,7 @@ export default function Home() {
             setFilterDate(filterDate.add(7, 'day'));
           }}
         >
-          Next
+          Next Week
         </Button>
       </div>
       <WeeklyEntryTable weeklyEntries={weeklyEntries} style={{}} />
