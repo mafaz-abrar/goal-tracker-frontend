@@ -1,4 +1,5 @@
 import Button from '@mui/material/Button';
+import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { WeeklyEntry } from '../api/api-interface';
 import { weeklyEntriesTestData } from '../api/test-data';
@@ -7,7 +8,7 @@ import WeeklyEntryTable from '../components/WeeklyEntryTable/WeeklyEntryTable';
 
 export default function Home() {
   const [weeklyEntries, setWeeklyEntries] = useState<WeeklyEntry[]>([]);
-  const [filterDate, setFilterDate] = useState('');
+  const [filterDate, setFilterDate] = useState<Dayjs>(dayjs());
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -22,16 +23,19 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <div
+      style={{
+        width: '80%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      }}
+    >
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          width: '80%',
-          marginLeft: 'auto',
-          marginRight: 'auto',
+
           paddingTop: '10px',
-          paddingBottom: '10px',
           alignItems: 'center',
         }}
       >
@@ -46,15 +50,52 @@ export default function Home() {
           sx={{
             height: '7vh',
           }}
+          variant='outlined'
           onClick={handleOpen}
         >
           Add Entry
         </Button>
       </div>
-      <WeeklyEntryTable
-        weeklyEntries={weeklyEntries}
-        style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}
-      />
+      <div
+        style={{
+          paddingBottom: '20px',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <Button
+          variant='contained'
+          onClick={() => {
+            setFilterDate(filterDate.subtract(7, 'day'));
+          }}
+        >
+          Prev
+        </Button>
+        <input
+          type='date'
+          style={{
+            borderWidth: '1px',
+            borderRadius: '5px',
+            padding: '5px',
+            width: '50%',
+            marginLeft: '10px',
+            marginRight: '10px',
+          }}
+          value={filterDate.toISOString().slice(0, 10)}
+          onChange={(e) => {
+            setFilterDate(dayjs(e.target.value));
+          }}
+        />
+        <Button
+          variant='contained'
+          onClick={() => {
+            setFilterDate(filterDate.add(7, 'day'));
+          }}
+        >
+          Next
+        </Button>
+      </div>
+      <WeeklyEntryTable weeklyEntries={weeklyEntries} style={{}} />
 
       <AddEntryDialog open={open} onClose={handleClose} />
     </div>

@@ -36,25 +36,25 @@ export default function WeeklyEntryRow({ weeklyEntry }: WeeklyEntryProps) {
       <TableCell className={styles.nameItem}>
         {weeklyEntry.activityName}
       </TableCell>
-      <TableCell className={styles.dataItem}>
+      <TableCell align='center' className={styles.dataItem}>
         {weeklyEntry.mondayHours}
       </TableCell>
-      <TableCell className={styles.dataItem}>
+      <TableCell align='center' className={styles.dataItem}>
         {weeklyEntry.tuesdayHours}
       </TableCell>
-      <TableCell className={styles.dataItem}>
+      <TableCell align='center' className={styles.dataItem}>
         {weeklyEntry.wednesdayHours}
       </TableCell>
-      <TableCell className={styles.dataItem}>
+      <TableCell align='center' className={styles.dataItem}>
         {weeklyEntry.thursdayHours}
       </TableCell>
-      <TableCell className={styles.dataItem}>
+      <TableCell align='center' className={styles.dataItem}>
         {weeklyEntry.fridayHours}
       </TableCell>
-      <TableCell className={styles.dataItem}>
+      <TableCell align='center' className={styles.dataItem}>
         {weeklyEntry.saturdayHours}
       </TableCell>
-      <TableCell className={styles.dataItem}>
+      <TableCell align='center' className={styles.dataItem}>
         {weeklyEntry.sundayHours}
       </TableCell>
       <TableCell>

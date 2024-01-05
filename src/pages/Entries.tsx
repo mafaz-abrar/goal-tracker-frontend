@@ -1,16 +1,20 @@
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 export default function Entries() {
   return (
-    <div>
-      {' '}
+    <div
+      style={{
+        width: '80%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      }}
+    >
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          width: '80%',
-          marginLeft: 'auto',
-          marginRight: 'auto',
+
           paddingTop: '10px',
           paddingBottom: '10px',
           alignItems: 'center',
@@ -27,10 +31,12 @@ export default function Entries() {
           sx={{
             height: '7vh',
           }}
+          variant='outlined'
         >
           Add Entry
         </Button>
       </div>
+      <TextField variant='outlined' label='Search' fullWidth />
     </div>
   );
 }
