@@ -1,4 +1,7 @@
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { Activity } from '../../api/api-interface';
@@ -13,9 +16,7 @@ export default function ActivityRow({ activity }: ActivityRowProps) {
   return (
     <TableRow>
       <TableCell sx={{ width: '80%' }}>{activity.activityName}</TableCell>
-      <TableCell
-        sx={{ width: '10%', textAlign: 'center', alignItems: 'center' }}
-      >
+      <TableCell sx={{ textAlign: 'center', alignItems: 'center' }}>
         <Button>
           {activity.targeting ? (
             <img
@@ -33,8 +34,16 @@ export default function ActivityRow({ activity }: ActivityRowProps) {
         </Button>
       </TableCell>
 
-      <TableCell sx={{ width: '10%', textAlign: 'center' }}>
-        {activity.weighting}
+      <TableCell sx={{ textAlign: 'center' }}>{activity.weighting}</TableCell>
+      <TableCell>
+        <IconButton>
+          <EditIcon />
+        </IconButton>
+      </TableCell>
+      <TableCell>
+        <IconButton>
+          <DeleteIcon />
+        </IconButton>
       </TableCell>
     </TableRow>
   );

@@ -1,4 +1,10 @@
-import { Activity, Goal, WeeklyEntry } from './api-interface';
+import {
+  Activity,
+  DayWithEntries,
+  EntryWithActivity,
+  Goal,
+  WeeklyEntry,
+} from './api-interface';
 
 const weeklyEntry1: WeeklyEntry = {
   activityId: 1,
@@ -85,16 +91,60 @@ const activity4: Activity = {
   weighting: 5,
 };
 
-export const goalTest: Goal = {
+export const goal1: Goal = {
   goalId: 0,
   goalName: 'first goal',
   activities: [activity1, activity2],
 };
 
-export const goalTest2: Goal = {
+export const goal2: Goal = {
   goalId: 1,
   goalName: 'second goal',
   activities: [activity3, activity4],
 };
 
-export const goalsTest: Goal[] = [goalTest, goalTest2];
+export const goalsTest: Goal[] = [goal1, goal2];
+
+export const entryWithActivity1: EntryWithActivity = {
+  activityName: 'first entry',
+  taskDescription: 'first desc',
+  hoursSpent: '1:00:00',
+  startTime: '17:05:00',
+  endTime: '18:05:00',
+};
+
+export const entryWithActivity2: EntryWithActivity = {
+  activityName: 'second entry',
+  taskDescription: 'second desc',
+  hoursSpent: '1:00:00',
+  startTime: '17:05:00',
+  endTime: '18:05:00',
+};
+
+export const entryWithActivity3: EntryWithActivity = {
+  activityName: 'third entry',
+  taskDescription: 'third desc',
+  hoursSpent: '1:00:00',
+  startTime: '17:05:00',
+  endTime: '18:05:00',
+};
+
+export const entryWithActivity4: EntryWithActivity = {
+  activityName: 'fourth entry',
+  taskDescription: 'fourth desc',
+  hoursSpent: '1:00:00',
+  startTime: '17:05:00',
+  endTime: '18:05:00',
+};
+
+export const day1: DayWithEntries = {
+  date: '2024-01-01',
+  entries: [entryWithActivity1, entryWithActivity2],
+};
+
+export const day2: DayWithEntries = {
+  date: '2023-12-01',
+  entries: [entryWithActivity3, entryWithActivity4],
+};
+
+export const daysTest: DayWithEntries[] = [day1, day2];

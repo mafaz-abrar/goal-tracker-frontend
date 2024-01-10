@@ -1,60 +1,68 @@
 import camelcaseKeysDeep from 'camelcase-keys-deep';
+import { TimeSpent } from './TimeSpent';
 
 const API_SERVER = new URL('http://goal-tracker-backend');
 
-export interface Entry {
-  entryId: number;
-  date: string; // pushed from backend as string
+export type Id = number | null;
+
+// The start time and end time, though nullable, should be sent as empty strings (?)
+export type Entry = {
+  entryId: Id;
+  date: Date;
   activityId: number;
   taskDescription: string;
-  hoursSpent: string; // pushed from backend as string
-  startTime: string; // pushed from backend as string
-  endTime: string; // pushed from backend as string
-}
+  timeSpent: TimeSpent;
+  startTime: Date;
+  endTime: Date;
+};
 
-export interface Activity {
-  activityId: number;
+export type Activity = {
+  activityId: Id;
   goalId: number;
   activityName: string;
   targeting: boolean;
   weighting: number;
-}
+};
 
-export interface Goal {
+export type Goal = {
+  goalId: Id;
+  goalName: string;
+};
+
+export type GoalWithActivities = {
   goalId: number;
   goalName: string;
   activities: Activity[];
-}
+};
 
-// The backend may not push hour variables for hours that don't have entries, instead of pushing ''
+export type ExpandedEntry = {
+  goal: Goal;
+  activity: Activity;
+  entry: Entry;
+};
+
+export type DayWithExpandedEntries = {
+  date: Date;
+  entries: ExpandedEntry[];
+};
+
+// The backend will not push hour variables for hours that don't have entries, instead of pushing ''
 // for those hours.
-export interface WeeklyEntry {
-  activityId: number;
-  activityName: string;
-  goalId: number;
-  goalName: string;
-  targeting: boolean;
-  weighting: number;
+export type ExpandedEntryWithWeeklyHours = {
+  expandedEntry: ExpandedEntry;
 
-  mondayHours?: string;
-  tuesdayHours?: string;
-  wednesdayHours?: string;
-  thursdayHours?: string;
-  fridayHours?: string;
-  saturdayHours?: string;
-  sundayHours?: string;
-}
+  mondayHours: TimeSpent;
+  tuesdayHours: TimeSpent;
+  wednesdayHours: TimeSpent;
+  thursdayHours: TimeSpent;
+  fridayHours: TimeSpent;
+  saturdayHours: TimeSpent;
+  sundayHours: TimeSpent;
+};
 
-export interface EntryWithActivity {
-  activityName: string;
-  taskDescription: string;
-  date: string;
-  hoursSpent: string;
-  startTime: string;
-  endTime: string;
-}
-
-export async function getWeeklyEntries(): Promise<WeeklyEntry[]> {
+export async function getWeeklyEntries(): Promise<
+  ExpandedEntryWithWeeklyHours[]
+> {
   const response = await fetch(
     new URL(API_SERVER, '/api/get_weekly_entries.php').href
   );
@@ -97,3 +105,5 @@ export async function getAllEntriesForActivity(
   );
   return camelcaseKeysDeep(await response.json());
 }
+
+export async function createNewEntry(entry: Entry) {}

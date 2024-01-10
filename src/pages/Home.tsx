@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { WeeklyEntry } from '../api/api-interface';
 import { weeklyEntriesTestData } from '../api/test-data';
-import AddEntryDialog from '../components/Modals/AddEntryDialog/AddEntryDialog';
+import AddEntryDialog from '../components/AddEntryDialog/AddEntryDialog';
 import WeeklyEntryTable from '../components/WeeklyEntryTable/WeeklyEntryTable';
 
 export default function Home() {
