@@ -1,8 +1,8 @@
-import { DayWithEntries } from '../../api/api-interface';
+import { DayWithExpandedEntries } from '../../api/api-interface';
 import EntryDayTable from './EntryDayTable';
 
 interface GoalsAndActivitiesTableGroupProps {
-  days: DayWithEntries[];
+  days: DayWithExpandedEntries[];
   style?: React.CSSProperties;
 }
 

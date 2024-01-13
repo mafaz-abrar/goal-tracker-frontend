@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { WeeklyEntry } from '../api/api-interface';
 import { weeklyEntriesTestData } from '../api/test-data';
-import AddEntryDialog from '../components/AddEntryDialog/AddEntryDialog';
+import AddEditEntryDialog from '../components/Dialogs/AddEditEntryDialog';
 import WeeklyEntryTable from '../components/WeeklyEntryTable/WeeklyEntryTable';
 
 export default function Home() {
@@ -15,6 +15,7 @@ export default function Home() {
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
+    // Keeping this around to remind ourselves how to fetch async data.
     async function getData() {
       setWeeklyEntries(weeklyEntriesTestData);
     }
@@ -97,7 +98,7 @@ export default function Home() {
       </div>
       <WeeklyEntryTable weeklyEntries={weeklyEntries} style={{}} />
 
-      <AddEntryDialog open={open} onClose={handleClose} />
+      <AddEditEntryDialog open={open} handleClose={handleClose} />
     </div>
   );
 }

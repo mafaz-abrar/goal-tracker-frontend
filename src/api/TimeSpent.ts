@@ -1,7 +1,22 @@
 const MINUTES_IN_HOUR = 60;
 
-export class TimeSpent {
+export default class TimeSpent {
   private totalMinutes: number;
+
+  // Formatted Time String looks like: 25:00.
+  private parseMinutesFormattedTimeString(formattedTimeString: string): number {
+    const timeArray = formattedTimeString.split(':');
+
+    if (timeArray.length !== 2)
+      throw new Error(
+        `TimeSpent: Wrong format used for ${formattedTimeString}`
+      );
+
+    const hoursPortion = +timeArray[0];
+    const minutesPortion = +timeArray[1];
+
+    return hoursPortion * 60 + minutesPortion;
+  }
 
   constructor(minutes?: number) {
     if (typeof minutes !== 'undefined') {
@@ -9,6 +24,11 @@ export class TimeSpent {
     } else {
       this.totalMinutes = 0;
     }
+  }
+
+  public setFromFormattedTimeString(formattedTimeString: string) {
+    this.totalMinutes =
+      this.parseMinutesFormattedTimeString(formattedTimeString);
   }
 
   public getHours(): number {

@@ -1,34 +1,39 @@
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
-import { Goal } from '../api/api-interface';
-import { goalsTest } from '../api/test-data';
+import { GoalWithActivities } from '../api/api-interface';
+import { goalsWithActivitiesTestData } from '../api/test-data';
 import GoalsAndActivitiesTableGroup from '../components/GoalsAndActivitiesTableGroup/GoalsAndActivitiesTableGroup';
 
-function filterGoalsBySearchTerm(goals: Goal[], searchTerm: string): Goal[] {
+function filterGoalsBySearchTerm(
+  goalsWithActivities: GoalWithActivities[],
+  searchTerm: string
+): GoalWithActivities[] {
   if (searchTerm.toLowerCase() === '') {
-    return goals;
+    return goalsWithActivities;
   }
 
-  const goalsWithMatchingActivities = goals
-    .map((goal) => {
-      const filteredActivities = goal.activities.filter((activity) =>
-        activity.activityName.toLowerCase().includes(searchTerm.toLowerCase())
+  const goalsWithMatchingActivities = goalsWithActivities
+    .map((goalWithActivities) => {
+      const filteredActivities = goalWithActivities.activities.filter(
+        (activity) =>
+          activity.activityName.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
       return {
-        goalId: goal.goalId,
-        goalName: goal.goalName,
+        goal: goalWithActivities.goal,
         activities: filteredActivities,
       };
     })
-    .filter((goal) => goal.activities.length);
+    .filter((goalWithActivities) => goalWithActivities.activities.length);
 
   if (goalsWithMatchingActivities.length !== 0)
     return goalsWithMatchingActivities;
 
-  return goals.filter((goal) =>
-    goal.goalName.toLowerCase().includes(searchTerm.toLowerCase())
+  return goalsWithActivities.filter((goalWithActivities) =>
+    goalWithActivities.goal.goalName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
   );
 }
 
@@ -79,7 +84,10 @@ export default function GoalsAndActivities() {
       />
 
       <GoalsAndActivitiesTableGroup
-        goals={filterGoalsBySearchTerm(goalsTest, searchTerm)}
+        goalsWithActivities={filterGoalsBySearchTerm(
+          goalsWithActivitiesTestData,
+          searchTerm
+        )}
       />
     </div>
   );

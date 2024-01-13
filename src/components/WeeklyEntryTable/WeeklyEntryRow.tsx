@@ -17,7 +17,7 @@ export default function WeeklyEntryRow({ weeklyEntry }: WeeklyEntryProps) {
     <TableRow>
       <TableCell>
         <Button>
-          {weeklyEntry.targeting ? (
+          {weeklyEntry.activity.targeting ? (
             <img
               src={GoalTrackerIcon}
               alt='targeting'
@@ -34,28 +34,28 @@ export default function WeeklyEntryRow({ weeklyEntry }: WeeklyEntryProps) {
       </TableCell>
       <TableCell className={styles.nameItem}>{weeklyEntry.goalName}</TableCell>
       <TableCell className={styles.nameItem}>
-        {weeklyEntry.activityName}
+        {weeklyEntry.activity.activityName}
       </TableCell>
       <TableCell align='center' className={styles.dataItem}>
-        {weeklyEntry.mondayHours}
+        {weeklyEntry.mondayHours.toString()}
       </TableCell>
       <TableCell align='center' className={styles.dataItem}>
-        {weeklyEntry.tuesdayHours}
+        {weeklyEntry.tuesdayHours.toString()}
       </TableCell>
       <TableCell align='center' className={styles.dataItem}>
-        {weeklyEntry.wednesdayHours}
+        {weeklyEntry.wednesdayHours.toString()}
       </TableCell>
       <TableCell align='center' className={styles.dataItem}>
-        {weeklyEntry.thursdayHours}
+        {weeklyEntry.thursdayHours.toString()}
       </TableCell>
       <TableCell align='center' className={styles.dataItem}>
-        {weeklyEntry.fridayHours}
+        {weeklyEntry.fridayHours.toString()}
       </TableCell>
       <TableCell align='center' className={styles.dataItem}>
-        {weeklyEntry.saturdayHours}
+        {weeklyEntry.saturdayHours.toString()}
       </TableCell>
       <TableCell align='center' className={styles.dataItem}>
-        {weeklyEntry.sundayHours}
+        {weeklyEntry.sundayHours.toString()}
       </TableCell>
       <TableCell>
         <IconButton>

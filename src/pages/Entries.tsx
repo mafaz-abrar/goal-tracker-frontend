@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { daysTest } from '../api/test-data';
+import { daysTestData } from '../api/test-data';
 import EntryTableGroup from '../components/EntriesTableGroup/EntryTableGroup';
 
 export default function Entries() {
@@ -39,7 +39,7 @@ export default function Entries() {
         </Button>
       </div>
       <TextField variant='outlined' label='Search' fullWidth />
-      <EntryTableGroup days={daysTest} />
+      <EntryTableGroup days={daysTestData} />
     </div>
   );
 }

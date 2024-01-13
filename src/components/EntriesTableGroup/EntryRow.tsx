@@ -3,20 +3,26 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { EntryWithActivity } from '../../api/api-interface';
+import { ExpandedEntry } from '../../api/api-interface';
 
 interface EntryRowProps {
-  entry: EntryWithActivity;
+  expandedEntry: ExpandedEntry;
 }
 
-export default function EntryRow({ entry }: EntryRowProps) {
+export default function EntryRow({ expandedEntry }: EntryRowProps) {
   return (
     <TableRow>
-      <TableCell sx={{ width: '40%' }}>{entry.activityName}</TableCell>
-      <TableCell sx={{ width: '40%' }}>{entry.taskDescription}</TableCell>
-      <TableCell>{entry.hoursSpent}</TableCell>
-      <TableCell>{entry.startTime}</TableCell>
-      <TableCell>{entry.endTime}</TableCell>
+      <TableCell sx={{ width: '40%' }}>{expandedEntry.activityName}</TableCell>
+      <TableCell sx={{ width: '40%' }}>
+        {expandedEntry.entry.taskDescription}
+      </TableCell>
+      <TableCell>{expandedEntry.entry.timeSpent.toString()}</TableCell>
+      <TableCell>
+        {expandedEntry.entry.startTime?.toLocaleTimeString() ?? ''}
+      </TableCell>
+      <TableCell>
+        {expandedEntry.entry.endTime?.toLocaleTimeString() ?? ''}
+      </TableCell>
       <TableCell>
         <IconButton>
           <EditIcon />

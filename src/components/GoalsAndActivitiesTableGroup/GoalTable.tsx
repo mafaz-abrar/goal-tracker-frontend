@@ -9,14 +9,14 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import { useState } from 'react';
-import { Goal } from '../../api/api-interface';
+import { GoalWithActivities } from '../../api/api-interface';
 import ActivityRow from './ActivityRow';
 
 interface GoalGroupProps {
-  goal: Goal;
+  goalWithActivities: GoalWithActivities;
 }
 
-export default function GoalGroup({ goal }: GoalGroupProps) {
+export default function GoalGroup({ goalWithActivities }: GoalGroupProps) {
   const [open, setOpen] = useState(true);
 
   return (
@@ -54,7 +54,7 @@ export default function GoalGroup({ goal }: GoalGroupProps) {
             }}
             onClick={() => setOpen(!open)}
           >
-            {goal.goalName}
+            {goalWithActivities.goal.goalName}
           </TableCell>
           <TableCell>
             <IconButton sx={{ color: 'white' }}>
@@ -66,7 +66,7 @@ export default function GoalGroup({ goal }: GoalGroupProps) {
           <TableCell style={{ padding: 0 }} colSpan={3}>
             <Collapse in={open} timeout='auto' unmountOnExit>
               <Table>
-                {goal.activities.map((activity) => (
+                {goalWithActivities.activities.map((activity) => (
                   <ActivityRow activity={activity} />
                 ))}
               </Table>

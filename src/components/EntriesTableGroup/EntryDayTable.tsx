@@ -13,11 +13,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { DayWithEntries } from '../../api/api-interface';
+import { DayWithExpandedEntries } from '../../api/api-interface';
 import EntryRow from './EntryRow';
 
 interface EntryTableProps {
-  day: DayWithEntries;
+  day: DayWithExpandedEntries;
 }
 
 export default function EntryTable({ day }: EntryTableProps) {
@@ -82,8 +82,8 @@ export default function EntryTable({ day }: EntryTableProps) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {day.entries.map((entry) => (
-                    <EntryRow entry={entry} />
+                  {day.expandedEntries.map((expandedEntry) => (
+                    <EntryRow expandedEntry={expandedEntry} />
                   ))}
                 </TableBody>
               </Table>

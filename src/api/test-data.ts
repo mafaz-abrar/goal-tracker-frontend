@@ -1,66 +1,26 @@
 import {
   Activity,
-  DayWithEntries,
-  EntryWithActivity,
+  DayWithExpandedEntries,
+  Entry,
+  ExpandedEntry,
   Goal,
+  GoalWithActivities,
   WeeklyEntry,
 } from './api-interface';
+import TimeSpent from './TimeSpent';
 
-const weeklyEntry1: WeeklyEntry = {
-  activityId: 1,
-  activityName: 'Do 100 pushups',
-  goalId: 1,
-  goalName: 'Achieve an ideal body shape',
-  targeting: false,
-  weighting: 0,
-
-  mondayHours: '00:00:00',
-  tuesdayHours: '00:15:20',
-  wednesdayHours: '00:20:15',
-  thursdayHours: '09:00:00',
-  fridayHours: '10:20:00',
-  saturdayHours: '00:30:00',
-  sundayHours: '20:00:00',
+const goal1: Goal = {
+  goalId: 0,
+  goalName: 'First goal: do good things',
 };
 
-const weeklyEntry2: WeeklyEntry = {
-  activityId: 1,
-  activityName: 'Gave in to Mr. Jack',
+const goal2: Goal = {
   goalId: 1,
-  goalName:
-    'Keep track of my failures lorem ipsum dolor eta lorem ipsum huh lorem ipsum bug test lorem ipsum',
-  targeting: true,
-  weighting: 1,
-
-  mondayHours: '20:00:00',
-  tuesdayHours: '00:30:00',
-  wednesdayHours: '10:45:00',
-  thursdayHours: '45:00:20',
+  goalName: "Second goal: don't do bad things",
 };
-
-const weeklyEntry3: WeeklyEntry = {
-  activityId: 1,
-  activityName:
-    'Do 300 pushups in a day, then do 300 more pushups in the same day',
-  goalId: 1,
-  goalName: 'Achieve an ideal body shape',
-  targeting: true,
-  weighting: -1,
-
-  mondayHours: '00:00:00',
-  thursdayHours: '09:00:00',
-  saturdayHours: '00:30:00',
-  sundayHours: '20:00:00',
-};
-
-export const weeklyEntriesTestData: WeeklyEntry[] = [
-  weeklyEntry1,
-  weeklyEntry2,
-  weeklyEntry3,
-];
 
 const activity1: Activity = {
-  activityId: 1,
+  activityId: 0,
   goalId: 0,
   activityName: 'first activity: get up early every day',
   targeting: true,
@@ -68,7 +28,7 @@ const activity1: Activity = {
 };
 
 const activity2: Activity = {
-  activityId: 2,
+  activityId: 1,
   goalId: 0,
   activityName: 'second activity: brush my teeth',
   targeting: false,
@@ -76,75 +36,241 @@ const activity2: Activity = {
 };
 
 const activity3: Activity = {
-  activityId: 3,
-  goalId: 0,
-  activityName: 'third activity: eat 3 meals a day',
+  activityId: 2,
+  goalId: 1,
+  activityName: 'third activity: resist Mr. Jack',
   targeting: false,
   weighting: 5,
 };
 
 const activity4: Activity = {
-  activityId: 4,
-  goalId: 0,
-  activityName: 'fourth activity: remind Junayed everything',
+  activityId: 3,
+  goalId: 1,
+  activityName: 'fourth activity: resist tim tams',
   targeting: true,
   weighting: 5,
 };
 
-export const goal1: Goal = {
-  goalId: 0,
-  goalName: 'first goal',
+const entry1: Entry = {
+  entryId: 0,
+  date: new Date('2023-12-27'),
+  activityId: 0,
+  taskDescription: 'got up pretty early',
+  timeSpent: new TimeSpent(120),
+  startTime: null,
+  endTime: null,
+};
+
+const entry2: Entry = {
+  entryId: 1,
+  date: new Date('2023-12-27'),
+  activityId: 1,
+  taskDescription: 'brushed teeth',
+  timeSpent: new TimeSpent(5),
+  startTime: null,
+  endTime: null,
+};
+
+const entry3: Entry = {
+  entryId: 2,
+  date: new Date('2023-12-28'),
+  activityId: 2,
+  taskDescription: 'resisted mr jack',
+  timeSpent: new TimeSpent(5),
+  startTime: null,
+  endTime: null,
+};
+
+const entry4: Entry = {
+  entryId: 3,
+  date: new Date('2023-12-28'),
+  activityId: 3,
+  taskDescription: 'resisted tim tams',
+  timeSpent: new TimeSpent(5),
+  startTime: null,
+  endTime: null,
+};
+
+const entry5: Entry = {
+  entryId: 4,
+  date: new Date('2023-12-29'),
+  activityId: 0,
+  taskDescription: 'got up pretty early',
+  timeSpent: new TimeSpent(120),
+  startTime: null,
+  endTime: null,
+};
+
+const entry6: Entry = {
+  entryId: 5,
+  date: new Date('2023-12-29'),
+  activityId: 1,
+  taskDescription: 'took a little while to brush teeth',
+  timeSpent: new TimeSpent(12),
+  startTime: null,
+  endTime: null,
+};
+
+const entry7: Entry = {
+  entryId: 6,
+  date: new Date('2023-12-30'),
+  activityId: 2,
+  taskDescription: 'resisted jack again, harder this time',
+  timeSpent: new TimeSpent(300),
+  startTime: null,
+  endTime: null,
+};
+
+const entry8: Entry = {
+  entryId: 7,
+  date: new Date('2023-12-30'),
+  activityId: 3,
+  taskDescription: 'resisted tim tams',
+  timeSpent: new TimeSpent(72),
+  startTime: null,
+  endTime: null,
+};
+
+const goalWithActivities1: GoalWithActivities = {
+  goal: goal1,
   activities: [activity1, activity2],
 };
 
-export const goal2: Goal = {
-  goalId: 1,
-  goalName: 'second goal',
+const goalWithActivities2: GoalWithActivities = {
+  goal: goal2,
   activities: [activity3, activity4],
 };
 
-export const goalsTest: Goal[] = [goal1, goal2];
+const weeklyEntry1: WeeklyEntry = {
+  goalName: 'Weekly Entry 1 goal',
+  activity: activity1,
 
-export const entryWithActivity1: EntryWithActivity = {
-  activityName: 'first entry',
-  taskDescription: 'first desc',
-  hoursSpent: '1:00:00',
-  startTime: '17:05:00',
-  endTime: '18:05:00',
+  mondayHours: new TimeSpent(0),
+  tuesdayHours: new TimeSpent(15),
+  wednesdayHours: new TimeSpent(20),
+  thursdayHours: new TimeSpent(0),
+  fridayHours: new TimeSpent(10 * 60 + 20),
+  saturdayHours: new TimeSpent(0),
+  sundayHours: new TimeSpent(20 * 60),
 };
 
-export const entryWithActivity2: EntryWithActivity = {
-  activityName: 'second entry',
-  taskDescription: 'second desc',
-  hoursSpent: '1:00:00',
-  startTime: '17:05:00',
-  endTime: '18:05:00',
+const weeklyEntry2: WeeklyEntry = {
+  goalName: 'Weekly Entry 2 goal',
+  activity: activity2,
+
+  mondayHours: new TimeSpent(9 * 60),
+  tuesdayHours: new TimeSpent(10 * 60),
+  wednesdayHours: new TimeSpent(20),
+  thursdayHours: new TimeSpent(0),
+  fridayHours: new TimeSpent(10 * 60 + 20),
+  saturdayHours: new TimeSpent(0),
+  sundayHours: new TimeSpent(15),
 };
 
-export const entryWithActivity3: EntryWithActivity = {
-  activityName: 'third entry',
-  taskDescription: 'third desc',
-  hoursSpent: '1:00:00',
-  startTime: '17:05:00',
-  endTime: '18:05:00',
+const weeklyEntry3: WeeklyEntry = {
+  goalName: 'Weekly Entry 3 goal',
+  activity: activity3,
+
+  mondayHours: new TimeSpent(24),
+  tuesdayHours: new TimeSpent(7),
+  wednesdayHours: new TimeSpent(14),
+  thursdayHours: new TimeSpent(0),
+  fridayHours: new TimeSpent(10 * 60 + 20),
+  saturdayHours: new TimeSpent(0),
+  sundayHours: new TimeSpent(0),
 };
 
-export const entryWithActivity4: EntryWithActivity = {
-  activityName: 'fourth entry',
-  taskDescription: 'fourth desc',
-  hoursSpent: '1:00:00',
-  startTime: '17:05:00',
-  endTime: '18:05:00',
+const weeklyEntry4: WeeklyEntry = {
+  goalName: 'Weekly Entry 4 goal',
+  activity: activity4,
+
+  mondayHours: new TimeSpent(0),
+  tuesdayHours: new TimeSpent(0),
+  wednesdayHours: new TimeSpent(0),
+  thursdayHours: new TimeSpent(0),
+  fridayHours: new TimeSpent(0),
+  saturdayHours: new TimeSpent(0),
+  sundayHours: new TimeSpent(0),
 };
 
-export const day1: DayWithEntries = {
-  date: '2024-01-01',
-  entries: [entryWithActivity1, entryWithActivity2],
+const expandedEntry1: ExpandedEntry = {
+  goalName: 'expanded entry 1 goal',
+  activityName: 'expanded entry 1 activity',
+  entry: entry1,
 };
 
-export const day2: DayWithEntries = {
-  date: '2023-12-01',
-  entries: [entryWithActivity3, entryWithActivity4],
+const expandedEntry2: ExpandedEntry = {
+  goalName: 'expanded entry 2 goal',
+  activityName: 'expanded entry 2 activity',
+  entry: entry2,
 };
 
-export const daysTest: DayWithEntries[] = [day1, day2];
+const expandedEntry3: ExpandedEntry = {
+  goalName: 'expanded entry 3 goal',
+  activityName: 'expanded entry 3 activity',
+  entry: entry3,
+};
+
+const expandedEntry4: ExpandedEntry = {
+  goalName: 'expanded entry 4 goal',
+  activityName: 'expanded entry 4 activity',
+  entry: entry4,
+};
+
+const expandedEntry5: ExpandedEntry = {
+  goalName: 'expanded entry 5 goal',
+  activityName: 'expanded entry 5 activity',
+  entry: entry5,
+};
+
+const expandedEntry6: ExpandedEntry = {
+  goalName: 'expanded entry 6 goal',
+  activityName: 'expanded entry 6 activity',
+  entry: entry6,
+};
+
+const expandedEntry7: ExpandedEntry = {
+  goalName: 'expanded entry 7 goal',
+  activityName: 'expanded entry 7 activity',
+  entry: entry7,
+};
+
+const expandedEntry8: ExpandedEntry = {
+  goalName: 'expanded entry 8 goal',
+  activityName: 'expanded entry 8 activity',
+  entry: entry8,
+};
+
+const day1: DayWithExpandedEntries = {
+  date: new Date('2023-12-27'),
+  expandedEntries: [expandedEntry1, expandedEntry2],
+};
+
+const day2: DayWithExpandedEntries = {
+  date: new Date('2023-12-28'),
+  expandedEntries: [expandedEntry3, expandedEntry4],
+};
+
+const day3: DayWithExpandedEntries = {
+  date: new Date('2023-12-29'),
+  expandedEntries: [expandedEntry5, expandedEntry6],
+};
+
+const day4: DayWithExpandedEntries = {
+  date: new Date('2023-12-30'),
+  expandedEntries: [expandedEntry7, expandedEntry8],
+};
+
+export const weeklyEntriesTestData: WeeklyEntry[] = [
+  weeklyEntry1,
+  weeklyEntry2,
+  weeklyEntry3,
+  weeklyEntry4,
+];
+
+export const daysTestData: DayWithExpandedEntries[] = [day1, day2, day3, day4];
+
+export const goalsWithActivitiesTestData: GoalWithActivities[] = [
+  goalWithActivities1,
+  goalWithActivities2,
+];

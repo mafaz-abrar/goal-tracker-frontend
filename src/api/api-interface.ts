@@ -1,55 +1,52 @@
 import camelcaseKeysDeep from 'camelcase-keys-deep';
-import { TimeSpent } from './TimeSpent';
+import dayjs from 'dayjs';
+import TimeSpent from './TimeSpent';
+import { API_SERVER } from './config';
 
-const API_SERVER = new URL('http://goal-tracker-backend');
-
-export type Id = number | null;
-
-// The start time and end time, though nullable, should be sent as empty strings (?)
-export type Entry = {
-  entryId: Id;
-  date: Date;
-  activityId: number;
-  taskDescription: string;
-  timeSpent: TimeSpent;
-  startTime: Date;
-  endTime: Date;
-};
-
-export type Activity = {
-  activityId: Id;
-  goalId: number;
-  activityName: string;
-  targeting: boolean;
-  weighting: number;
-};
+export type Id = number | null; // This way, Id can be used for both insert and update.
 
 export type Goal = {
   goalId: Id;
   goalName: string;
 };
 
+export type Activity = {
+  activityId: Id;
+  goalId: number; // Can't be an Id, since Id can be null.
+  activityName: string;
+  targeting: boolean;
+  weighting: number;
+};
+
+export type Entry = {
+  entryId: Id;
+  date: Date;
+  activityId: number; // Can't be an Id, since Id can be null.
+  taskDescription: string;
+  timeSpent: TimeSpent;
+  startTime: Date | null;
+  endTime: Date | null;
+};
+
 export type GoalWithActivities = {
-  goalId: number;
-  goalName: string;
+  goal: Goal;
   activities: Activity[];
 };
 
 export type ExpandedEntry = {
-  goal: Goal;
-  activity: Activity;
+  goalName: string;
+  activityName: string;
   entry: Entry;
 };
 
 export type DayWithExpandedEntries = {
-  date: Date;
-  entries: ExpandedEntry[];
+  date: Date; // Included for ease of access by developer.
+  expandedEntries: ExpandedEntry[];
 };
 
-// The backend will not push hour variables for hours that don't have entries, instead of pushing ''
-// for those hours.
-export type ExpandedEntryWithWeeklyHours = {
-  expandedEntry: ExpandedEntry;
+export type WeeklyEntry = {
+  goalName: string;
+  activity: Activity;
 
   mondayHours: TimeSpent;
   tuesdayHours: TimeSpent;
@@ -60,32 +57,37 @@ export type ExpandedEntryWithWeeklyHours = {
   sundayHours: TimeSpent;
 };
 
-export async function getWeeklyEntries(): Promise<
-  ExpandedEntryWithWeeklyHours[]
-> {
+export async function getWeeklyEntriesForDate(
+  date: Date
+): Promise<WeeklyEntry[]> {
   const response = await fetch(
-    new URL(API_SERVER, '/api/get_weekly_entries.php').href
+    new URL(
+      API_SERVER,
+      `/api/get_weekly_entries_for_date.php?date=${dayjs(date).format(
+        'YYYY-MM-DD'
+      )}`
+    ).href
   );
   return camelcaseKeysDeep(await response.json());
 }
 
-export async function getAllGoalsAndActivities(): Promise<Goal[]> {
+export async function getAllGoalsAndActivities(): Promise<
+  GoalWithActivities[]
+> {
   const response = await fetch(
     new URL(API_SERVER, '/api/get_all_goals_and_activities.php').href
   );
   return camelcaseKeysDeep(await response.json());
 }
 
-export async function getAllEntriesByDate(date: Date): Promise<Entry[]> {
-  const formData = new FormData();
-  formData.append('date', date.toISOString().slice(0, 10));
-
+export async function getAllEntriesForDate(date: Date): Promise<Entry[]> {
   const response = await fetch(
-    new URL(API_SERVER, '/api/get_all_entries_by_date.php').href,
-    {
-      method: 'post',
-      body: formData,
-    }
+    new URL(
+      API_SERVER,
+      `/api/get_all_entries_for_date.php?date=${dayjs(date).format(
+        'YYYY-MM-DD'
+      )}`
+    ).href
   );
   return camelcaseKeysDeep(await response.json());
 }
@@ -93,17 +95,23 @@ export async function getAllEntriesByDate(date: Date): Promise<Entry[]> {
 export async function getAllEntriesForActivity(
   activityId: number
 ): Promise<Entry[]> {
-  const formData = new FormData();
-  formData.append('activity_id', activityId.toString());
-
   const response = await fetch(
-    new URL(API_SERVER, '/api/get_all_entries_for_activity.php').href,
-    {
-      method: 'post',
-      body: formData,
-    }
+    new URL(
+      API_SERVER,
+      `/api/get_all_entries_for_activity.php?activity_id=${activityId}`
+    ).href
   );
   return camelcaseKeysDeep(await response.json());
 }
 
-export async function createNewEntry(entry: Entry) {}
+export async function postEntry(entry: Entry) {}
+
+export async function postActivity(activity: Activity) {}
+
+export async function postGoal(goal: Goal) {}
+
+export async function deleteEntry(entryId: Id) {}
+
+export async function deleteActivity(activityId: Id) {}
+
+export async function deleteGoal(goalId: Id) {}
