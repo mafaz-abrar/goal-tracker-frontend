@@ -7,11 +7,13 @@ import WeeklyEntryRow from './WeeklyEntryRow';
 
 interface WeeklyEntryTableProps {
   weeklyEntries: WeeklyEntry[];
+  handleDialogOpen: () => void;
   style?: React.CSSProperties;
 }
 
 export default function WeeklyEntryTable({
   weeklyEntries,
+  handleDialogOpen,
   style,
 }: WeeklyEntryTableProps) {
   // TODO: Move this to an outer function: [out of scope for MVP].
@@ -43,7 +45,10 @@ export default function WeeklyEntryTable({
       <Table>
         <WeeklyEntryHeader />
         {weeklyEntries.map((weeklyEntry) => (
-          <WeeklyEntryRow weeklyEntry={weeklyEntry} />
+          <WeeklyEntryRow
+            weeklyEntry={weeklyEntry}
+            handleDialogOpen={handleDialogOpen}
+          />
         ))}
       </Table>
     </TableContainer>

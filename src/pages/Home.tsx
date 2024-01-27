@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { WeeklyEntry } from '../api/api-interface';
 import { weeklyEntriesTestData } from '../api/test-data';
-import AddEditEntryDialog from '../components/Dialogs/AddEditEntryDialog';
+import EntryDialog from '../components/Dialogs/EntryDialog';
 import WeeklyEntryTable from '../components/WeeklyEntryTable/WeeklyEntryTable';
 
 export default function Home() {
@@ -96,9 +96,12 @@ export default function Home() {
           Next Week
         </Button>
       </div>
-      <WeeklyEntryTable weeklyEntries={weeklyEntries} style={{}} />
+      <WeeklyEntryTable
+        weeklyEntries={weeklyEntries}
+        handleDialogOpen={handleOpen}
+      />
 
-      <AddEditEntryDialog open={open} handleClose={handleClose} />
+      <EntryDialog open={open} handleClose={handleClose} entry={{}} />
     </div>
   );
 }

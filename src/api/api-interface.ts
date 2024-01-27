@@ -3,25 +3,23 @@ import dayjs from 'dayjs';
 import TimeSpent from './TimeSpent';
 import { API_SERVER } from './config';
 
-export type Id = number | null; // This way, Id can be used for both insert and update.
-
 export type Goal = {
-  goalId: Id;
+  goalId: number;
   goalName: string;
 };
 
 export type Activity = {
-  activityId: Id;
-  goalId: number; // Can't be an Id, since Id can be null.
+  activityId: number;
+  goalId: number;
   activityName: string;
   targeting: boolean;
   weighting: number;
 };
 
 export type Entry = {
-  entryId: Id;
+  entryId: number;
   date: Date;
-  activityId: number; // Can't be an Id, since Id can be null.
+  activityId: number;
   taskDescription: string;
   timeSpent: TimeSpent;
   startTime: Date | null;
@@ -104,14 +102,34 @@ export async function getAllEntriesForActivity(
   return camelcaseKeysDeep(await response.json());
 }
 
-export async function postEntry(entry: Entry) {}
+export async function addNewEntry(entry: Entry) {
+  const formData = new FormData();
+  console.log(entry);
+
+  formData.append('activity_id', entry.activityId.toString());
+  // formData.append('activity_id', '2');
+  // formData.append('date', '2024-01-19');
+  // formData.append('task_description', 'From React');
+  // formData.append('hours', '05:00:00');
+
+  console.log(formData.get('activity_id'));
+  const response = await fetch(
+    `http://goal-tracker-backend/api/entry_process.php?mode=add`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  return await camelcaseKeysDeep(response.json());
+}
 
 export async function postActivity(activity: Activity) {}
 
 export async function postGoal(goal: Goal) {}
 
-export async function deleteEntry(entryId: Id) {}
+export async function deleteEntry(entryId: number) {}
 
-export async function deleteActivity(activityId: Id) {}
+export async function deleteActivity(activityId: number) {}
 
-export async function deleteGoal(goalId: Id) {}
+export async function deleteGoal(goalId: number) {}

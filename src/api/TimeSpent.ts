@@ -26,9 +26,13 @@ export default class TimeSpent {
     }
   }
 
-  public setFromFormattedTimeString(formattedTimeString: string) {
+  public buildFromFormattedTimeString(formattedTimeString: string) {
+    if (formattedTimeString === '') return this;
+
     this.totalMinutes =
       this.parseMinutesFormattedTimeString(formattedTimeString);
+
+    return this;
   }
 
   public getHours(): number {
@@ -38,6 +42,10 @@ export default class TimeSpent {
   public getMinutes(): number {
     const remainingMinutes = this.totalMinutes % MINUTES_IN_HOUR;
     return Math.floor(remainingMinutes);
+  }
+
+  public getTotalMinutes(): number {
+    return this.totalMinutes;
   }
 
   public toString() {
