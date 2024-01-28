@@ -44,12 +44,15 @@ export default function WeeklyEntryTable({
     <TableContainer component={Paper} sx={style}>
       <Table>
         <WeeklyEntryHeader />
-        {weeklyEntries.map((weeklyEntry) => (
-          <WeeklyEntryRow
-            weeklyEntry={weeklyEntry}
-            handleDialogOpen={handleDialogOpen}
-          />
-        ))}
+        {weeklyEntries.map((weeklyEntry) => {
+          console.log(weeklyEntry);
+          return (
+            <WeeklyEntryRow
+              weeklyEntry={weeklyEntry}
+              handleDialogOpen={handleDialogOpen}
+            />
+          );
+        })}
       </Table>
     </TableContainer>
   );

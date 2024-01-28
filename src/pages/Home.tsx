@@ -1,8 +1,7 @@
 import Button from '@mui/material/Button';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
-import { WeeklyEntry } from '../api/api-interface';
-import { weeklyEntriesTestData } from '../api/test-data';
+import { WeeklyEntry, getWeeklyEntriesForDate } from '../api/api-interface';
 import EntryDialog from '../components/Dialogs/EntryDialog';
 import WeeklyEntryTable from '../components/WeeklyEntryTable/WeeklyEntryTable';
 
@@ -16,12 +15,15 @@ export default function Home() {
 
   useEffect(() => {
     // Keeping this around to remind ourselves how to fetch async data.
+    console.log('Ran useEffect!');
+
     async function getData() {
-      setWeeklyEntries(weeklyEntriesTestData);
+      const data = await getWeeklyEntriesForDate(filterDate.toDate());
+      setWeeklyEntries(data);
     }
 
     getData();
-  }, []);
+  }, [filterDate]);
 
   return (
     <div

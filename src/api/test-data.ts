@@ -145,52 +145,52 @@ const weeklyEntry1: WeeklyEntry = {
   goalName: 'Weekly Entry 1 goal',
   activity: activity1,
 
-  mondayHours: new TimeSpent(0),
-  tuesdayHours: new TimeSpent(15),
-  wednesdayHours: new TimeSpent(20),
-  thursdayHours: new TimeSpent(0),
-  fridayHours: new TimeSpent(10 * 60 + 20),
-  saturdayHours: new TimeSpent(0),
-  sundayHours: new TimeSpent(20 * 60),
+  mondayTime: new TimeSpent(0),
+  tuesdayTime: new TimeSpent(15),
+  wednesdayTime: new TimeSpent(20),
+  thursdayTime: new TimeSpent(0),
+  fridayTime: new TimeSpent(10 * 60 + 20),
+  saturdayTime: new TimeSpent(0),
+  sundayTime: new TimeSpent(20 * 60),
 };
 
 const weeklyEntry2: WeeklyEntry = {
   goalName: 'Weekly Entry 2 goal',
   activity: activity2,
 
-  mondayHours: new TimeSpent(9 * 60),
-  tuesdayHours: new TimeSpent(10 * 60),
-  wednesdayHours: new TimeSpent(20),
-  thursdayHours: new TimeSpent(0),
-  fridayHours: new TimeSpent(10 * 60 + 20),
-  saturdayHours: new TimeSpent(0),
-  sundayHours: new TimeSpent(15),
+  mondayTime: new TimeSpent(9 * 60),
+  tuesdayTime: new TimeSpent(10 * 60),
+  wednesdayTime: new TimeSpent(20),
+  thursdayTime: new TimeSpent(0),
+  fridayTime: new TimeSpent(10 * 60 + 20),
+  saturdayTime: new TimeSpent(0),
+  sundayTime: new TimeSpent(15),
 };
 
 const weeklyEntry3: WeeklyEntry = {
   goalName: 'Weekly Entry 3 goal',
   activity: activity3,
 
-  mondayHours: new TimeSpent(24),
-  tuesdayHours: new TimeSpent(7),
-  wednesdayHours: new TimeSpent(14),
-  thursdayHours: new TimeSpent(0),
-  fridayHours: new TimeSpent(10 * 60 + 20),
-  saturdayHours: new TimeSpent(0),
-  sundayHours: new TimeSpent(0),
+  mondayTime: new TimeSpent(24),
+  tuesdayTime: new TimeSpent(7),
+  wednesdayTime: new TimeSpent(14),
+  thursdayTime: new TimeSpent(0),
+  fridayTime: new TimeSpent(10 * 60 + 20),
+  saturdayTime: new TimeSpent(0),
+  sundayTime: new TimeSpent(0),
 };
 
 const weeklyEntry4: WeeklyEntry = {
   goalName: 'Weekly Entry 4 goal',
   activity: activity4,
 
-  mondayHours: new TimeSpent(0),
-  tuesdayHours: new TimeSpent(0),
-  wednesdayHours: new TimeSpent(0),
-  thursdayHours: new TimeSpent(0),
-  fridayHours: new TimeSpent(0),
-  saturdayHours: new TimeSpent(0),
-  sundayHours: new TimeSpent(0),
+  mondayTime: new TimeSpent(0),
+  tuesdayTime: new TimeSpent(0),
+  wednesdayTime: new TimeSpent(0),
+  thursdayTime: new TimeSpent(0),
+  fridayTime: new TimeSpent(0),
+  saturdayTime: new TimeSpent(0),
+  sundayTime: new TimeSpent(0),
 };
 
 const expandedEntry1: ExpandedEntry = {

@@ -16,6 +16,16 @@ export type Activity = {
   weighting: number;
 };
 
+type SimpleEntry = {
+  entryId: number;
+  date: string;
+  activityId: number;
+  taskDescription: string;
+  timeSpent: number;
+  startTime: string | null;
+  endTime: string | null;
+};
+
 export type Entry = {
   entryId: number;
   date: Date;
@@ -31,10 +41,21 @@ export type GoalWithActivities = {
   activities: Activity[];
 };
 
+type SimpleExpandedEntry = {
+  goalName: string;
+  activityName: string;
+  entry: SimpleEntry;
+};
+
 export type ExpandedEntry = {
   goalName: string;
   activityName: string;
   entry: Entry;
+};
+
+type SimpleDayWithExpandedEntries = {
+  date: string;
+  expandedEntries: SimpleExpandedEntry[];
 };
 
 export type DayWithExpandedEntries = {
@@ -42,31 +63,60 @@ export type DayWithExpandedEntries = {
   expandedEntries: ExpandedEntry[];
 };
 
+type SimpleWeeklyEntry = {
+  goalName: string;
+  activity: Activity;
+
+  mondayTime: number;
+  tuesdayTime: number;
+  wednesdayTime: number;
+  thursdayTime: number;
+  fridayTime: number;
+  saturdayTime: number;
+  sundayTime: number;
+};
+
 export type WeeklyEntry = {
   goalName: string;
   activity: Activity;
 
-  mondayHours: TimeSpent;
-  tuesdayHours: TimeSpent;
-  wednesdayHours: TimeSpent;
-  thursdayHours: TimeSpent;
-  fridayHours: TimeSpent;
-  saturdayHours: TimeSpent;
-  sundayHours: TimeSpent;
+  mondayTime: TimeSpent;
+  tuesdayTime: TimeSpent;
+  wednesdayTime: TimeSpent;
+  thursdayTime: TimeSpent;
+  fridayTime: TimeSpent;
+  saturdayTime: TimeSpent;
+  sundayTime: TimeSpent;
 };
 
 export async function getWeeklyEntriesForDate(
   date: Date
 ): Promise<WeeklyEntry[]> {
   const response = await fetch(
-    new URL(
-      API_SERVER,
-      `/api/get_weekly_entries_for_date.php?date=${dayjs(date).format(
-        'YYYY-MM-DD'
-      )}`
-    ).href
+    `http://goal-tracker-backend/api/main_report.php?filter_date=${dayjs(
+      date
+    ).format('YYYY-MM-DD')}`
   );
-  return camelcaseKeysDeep(await response.json());
+
+  const data = camelcaseKeysDeep(await response.json());
+
+  const returnVal = data.map((weeklyEntry: SimpleWeeklyEntry) => {
+    console.log(weeklyEntry);
+
+    return {
+      goalName: weeklyEntry.goalName,
+      activity: weeklyEntry.activity,
+      mondayTime: new TimeSpent(weeklyEntry.mondayTime),
+      tuesdayTime: new TimeSpent(weeklyEntry.tuesdayTime),
+      wednesdayTime: new TimeSpent(weeklyEntry.wednesdayTime),
+      thursdayTime: new TimeSpent(weeklyEntry.thursdayTime),
+      fridayTime: new TimeSpent(weeklyEntry.fridayTime),
+      saturdayTime: new TimeSpent(weeklyEntry.saturdayTime),
+      sundayTime: new TimeSpent(weeklyEntry.sundayTime),
+    };
+  });
+
+  return returnVal;
 }
 
 export async function getAllGoalsAndActivities(): Promise<
@@ -76,6 +126,50 @@ export async function getAllGoalsAndActivities(): Promise<
     new URL(API_SERVER, '/api/get_all_goals_and_activities.php').href
   );
   return camelcaseKeysDeep(await response.json());
+}
+
+export async function getAllEntries(): Promise<DayWithExpandedEntries[]> {
+  const response = await fetch(
+    `http://goal-tracker-backend/api/all_entries.php`
+  );
+
+  const data = camelcaseKeysDeep(await response.json());
+
+  const returnVal = data.map(
+    (dayWithExpandedEntry: SimpleDayWithExpandedEntries) => {
+      const processedEntries = dayWithExpandedEntry.expandedEntries.map(
+        (expandedEntry: SimpleExpandedEntry) => {
+          console.log(expandedEntry);
+
+          return {
+            goalName: expandedEntry.goalName,
+            activityName: expandedEntry.activityName,
+            entry: {
+              entryId: expandedEntry.entry.entryId,
+              date: new Date(expandedEntry.entry.date),
+              activityId: expandedEntry.entry.activityId,
+              taskDescription: expandedEntry.entry.taskDescription,
+              timeSpent: new TimeSpent(expandedEntry.entry.timeSpent / 60),
+              startTime: expandedEntry.entry.startTime
+                ? new Date(expandedEntry.entry.startTime)
+                : null,
+              endTime: expandedEntry.entry.endTime
+                ? new Date(expandedEntry.entry.endTime)
+                : null,
+            },
+          };
+        }
+      );
+
+      return {
+        date: new Date(dayWithExpandedEntry.date),
+        expandedEntries: processedEntries,
+      };
+    }
+  );
+
+  console.log(returnVal);
+  return returnVal;
 }
 
 export async function getAllEntriesForDate(date: Date): Promise<Entry[]> {
@@ -107,10 +201,9 @@ export async function addNewEntry(entry: Entry) {
   console.log(entry);
 
   formData.append('activity_id', entry.activityId.toString());
-  // formData.append('activity_id', '2');
-  // formData.append('date', '2024-01-19');
-  // formData.append('task_description', 'From React');
-  // formData.append('hours', '05:00:00');
+  formData.append('date', dayjs(entry.date).format('YYYY-MM-DD'));
+  formData.append('task_description', entry.taskDescription);
+  formData.append('hours', entry.timeSpent.toString());
 
   console.log(formData.get('activity_id'));
   const response = await fetch(

@@ -44,25 +44,39 @@ export default function WeeklyEntryRow({
           {weeklyEntry.activity.activityName}
         </TableCell>
         <TableCell align='center' className={styles.dataItem}>
-          {weeklyEntry.mondayHours.toString()}
+          {weeklyEntry.mondayTime.getTotalMinutes() === 0
+            ? ''
+            : weeklyEntry.mondayTime.toString()}
         </TableCell>
         <TableCell align='center' className={styles.dataItem}>
-          {weeklyEntry.tuesdayHours.toString()}
+          {weeklyEntry.tuesdayTime.getTotalMinutes() === 0
+            ? ''
+            : weeklyEntry.tuesdayTime.toString()}
         </TableCell>
         <TableCell align='center' className={styles.dataItem}>
-          {weeklyEntry.wednesdayHours.toString()}
+          {weeklyEntry.wednesdayTime.getTotalMinutes() === 0
+            ? ''
+            : weeklyEntry.wednesdayTime.toString()}
         </TableCell>
         <TableCell align='center' className={styles.dataItem}>
-          {weeklyEntry.thursdayHours.toString()}
+          {weeklyEntry.thursdayTime.getTotalMinutes() === 0
+            ? ''
+            : weeklyEntry.thursdayTime.toString()}
         </TableCell>
         <TableCell align='center' className={styles.dataItem}>
-          {weeklyEntry.fridayHours.toString()}
+          {weeklyEntry.fridayTime.getTotalMinutes() === 0
+            ? ''
+            : weeklyEntry.fridayTime.toString()}
         </TableCell>
         <TableCell align='center' className={styles.dataItem}>
-          {weeklyEntry.saturdayHours.toString()}
+          {weeklyEntry.saturdayTime.getTotalMinutes() === 0
+            ? ''
+            : weeklyEntry.saturdayTime.toString()}
         </TableCell>
         <TableCell align='center' className={styles.dataItem}>
-          {weeklyEntry.sundayHours.toString()}
+          {weeklyEntry.sundayTime.getTotalMinutes() === 0
+            ? ''
+            : weeklyEntry.sundayTime.toString()}
         </TableCell>
         <TableCell>
           <IconButton onClick={handleDialogOpen}>
