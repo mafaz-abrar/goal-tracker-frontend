@@ -14,8 +14,8 @@ import {
   Entry,
   GoalWithActivities,
   addNewEntry,
+  getAllGoalsAndActivities,
 } from '../../api/api-interface';
-import { goalsWithActivitiesTestData } from '../../api/test-data';
 import { validateEntryForAdd } from '../../validators/entry-validator';
 import ErrorHandler from '../ErrorHandler/ErrorHandler';
 
@@ -76,7 +76,13 @@ export default function EntryDialog({
   }
 
   useEffect(() => {
-    setGoalsWithActivities(goalsWithActivitiesTestData);
+    async function getData() {
+      const response = await getAllGoalsAndActivities();
+
+      setGoalsWithActivities(response);
+    }
+
+    getData();
   }, []);
 
   function onClose() {
