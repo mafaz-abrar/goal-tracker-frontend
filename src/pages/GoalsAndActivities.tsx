@@ -1,8 +1,10 @@
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
-import { GoalWithActivities } from '../api/api-interface';
-import { goalsWithActivitiesTestData } from '../api/test-data';
+import { useEffect, useState } from 'react';
+import {
+  GoalWithActivities,
+  getAllGoalsAndActivities,
+} from '../api/api-interface';
 import GoalsAndActivitiesTableGroup from '../components/GoalsAndActivitiesTableGroup/GoalsAndActivitiesTableGroup';
 
 function filterGoalsBySearchTerm(
@@ -39,6 +41,18 @@ function filterGoalsBySearchTerm(
 
 export default function GoalsAndActivities() {
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [goalsWithActivities, setGoalsWithActivities] = useState<
+    GoalWithActivities[]
+  >([]);
+
+  useEffect(() => {
+    async function getData() {
+      const response = await getAllGoalsAndActivities();
+
+      setGoalsWithActivities(response);
+    }
+    getData();
+  }, []);
 
   return (
     <div
@@ -85,7 +99,7 @@ export default function GoalsAndActivities() {
 
       <GoalsAndActivitiesTableGroup
         goalsWithActivities={filterGoalsBySearchTerm(
-          goalsWithActivitiesTestData,
+          goalsWithActivities,
           searchTerm
         )}
       />
