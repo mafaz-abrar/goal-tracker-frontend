@@ -1,13 +1,18 @@
 import Button from '@mui/material/Button';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
-import { WeeklyEntry, getWeeklyEntriesForDate } from '../api/api-interface';
+import {
+  Entry,
+  WeeklyEntry,
+  getWeeklyEntriesForDate,
+} from '../api/api-interface';
 import EntryDialog from '../components/Dialogs/EntryDialog';
 import WeeklyEntryTable from '../components/WeeklyEntryTable/WeeklyEntryTable';
 
 export default function Home() {
   const [weeklyEntries, setWeeklyEntries] = useState<WeeklyEntry[]>([]);
   const [filterDate, setFilterDate] = useState<Dayjs>(dayjs());
+  const [entryData, setEntryData] = useState<Partial<Entry>>({});
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -23,7 +28,7 @@ export default function Home() {
     }
 
     getData();
-  }, [filterDate]);
+  }, [filterDate, open]);
 
   return (
     <div
@@ -100,10 +105,16 @@ export default function Home() {
       </div>
       <WeeklyEntryTable
         weeklyEntries={weeklyEntries}
+        setEntryData={setEntryData}
         handleDialogOpen={handleOpen}
       />
 
-      <EntryDialog open={open} handleClose={handleClose} entry={{}} />
+      <EntryDialog
+        open={open}
+        handleClose={handleClose}
+        entry={entryData}
+        setEntry={setEntryData}
+      />
     </div>
   );
 }

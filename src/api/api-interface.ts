@@ -123,7 +123,7 @@ export async function getAllGoalsAndActivities(): Promise<
   GoalWithActivities[]
 > {
   const response = await fetch(
-    new URL(API_SERVER, '/api/get_all_goals_and_activities.php').href
+    'http://goal-tracker-backend/api/goals_with_activities.php'
   );
   return camelcaseKeysDeep(await response.json());
 }
@@ -226,3 +226,16 @@ export async function deleteEntry(entryId: number) {}
 export async function deleteActivity(activityId: number) {}
 
 export async function deleteGoal(goalId: number) {}
+
+export async function flipTargeting(activityId: number) {
+  const formData = new FormData();
+  formData.append('activity_id', activityId.toString());
+
+  const response = await fetch(
+    `http://goal-tracker-backend/api/flip_targeting.php`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+}

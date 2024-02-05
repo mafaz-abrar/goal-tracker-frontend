@@ -28,6 +28,7 @@ interface EntryDialogProps {
   // activity Id, date for weeklyEntry context
   // can we use useContext for this?
   entry: Partial<Entry>;
+  setEntry: React.Dispatch<React.SetStateAction<Partial<Entry>>>;
 }
 
 async function postData(entry: Entry) {
@@ -38,6 +39,7 @@ export default function EntryDialog({
   open,
   handleClose,
   entry,
+  setEntry,
 }: EntryDialogProps) {
   const [goalsWithActivities, setGoalsWithActivities] = useState<
     GoalWithActivities[]
@@ -46,7 +48,9 @@ export default function EntryDialog({
     useState<GoalWithActivities | null>(null);
 
   const [entryId, setEntryId] = useState<number | null>(null);
-  const [activityId, setActivityId] = useState<number | null>(null);
+  const [activityId, setActivityId] = useState<number | null>(
+    entry.activityId ? entry.activityId : null
+  );
   const [date, setDate] = useState<Dayjs | null>(
     entry ? dayjs(entry.date) : dayjs()
   );
@@ -66,13 +70,7 @@ export default function EntryDialog({
   const [error, setError] = useState<string>('');
 
   function clearData() {
-    setError('');
-    setActivityId(null);
-    setDate(null);
-    setTaskDescription(null);
-    setTimeSpent(null);
-    setStartTime(null);
-    setEndTime(null);
+    setEntry({});
   }
 
   useEffect(() => {
@@ -92,7 +90,7 @@ export default function EntryDialog({
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add Entry</DialogTitle>
+      <DialogTitle>{entry.taskDescription}</DialogTitle>
 
       <DialogContent>
         {error !== '' ? <ErrorHandler errorMsg={error} /> : <></>}
@@ -142,16 +140,22 @@ export default function EntryDialog({
           }}
         />
 
+        {/**  OK, this works: */}
         <TextField
           autoFocus
           margin='dense'
           id='name'
           label='Task Description'
-          type='email'
+          type='text'
           fullWidth
           variant='filled'
-          value={taskDescription}
-          onChange={(event) => setTaskDescription(event.target.value)}
+          value={entry.taskDescription}
+          onChange={(event) =>
+            setEntry((prev) => ({
+              ...prev,
+              taskDescription: event.target.value,
+            }))
+          }
         />
 
         <TextField

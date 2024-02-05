@@ -1,4 +1,3 @@
-import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -22,14 +21,6 @@ export default function AddGoalDialog({
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add Goal</DialogTitle>
       <DialogContent>
-        <Autocomplete
-          disablePortal
-          id='combo-box-demo'
-          options={['hey', 'hi', 'ho']}
-          sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label='Movie' />}
-        />
-
         <TextField
           autoFocus
           margin='dense'

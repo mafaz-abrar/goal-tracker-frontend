@@ -3,25 +3,35 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { WeeklyEntry } from '../../api/api-interface';
+import { Entry, WeeklyEntry, flipTargeting } from '../../api/api-interface';
 import GoalTrackerDisabledIcon from '../../assets/GoalTrackerDisabledIcon.png';
 import GoalTrackerIcon from '../../assets/GoalTrackerIcon.png';
 import styles from './WeeklyEntryTable.module.css';
 
 interface WeeklyEntryProps {
   weeklyEntry: WeeklyEntry;
+  setEntryData: React.Dispatch<React.SetStateAction<Partial<Entry>>>;
   handleDialogOpen: () => void;
+}
+
+function postData(activityId: number) {
+  flipTargeting(activityId);
 }
 
 export default function WeeklyEntryRow({
   weeklyEntry,
+  setEntryData,
   handleDialogOpen,
 }: WeeklyEntryProps) {
   return (
     <>
       <TableRow>
         <TableCell>
-          <Button>
+          <Button
+            onClick={() => {
+              postData(weeklyEntry.activity.activityId);
+            }}
+          >
             {weeklyEntry.activity.targeting ? (
               <img
                 src={GoalTrackerIcon}
@@ -79,7 +89,15 @@ export default function WeeklyEntryRow({
             : weeklyEntry.sundayTime.toString()}
         </TableCell>
         <TableCell>
-          <IconButton onClick={handleDialogOpen}>
+          <IconButton
+            onClick={() => {
+              setEntryData({
+                date: new Date(),
+                taskDescription: weeklyEntry.activity.activityName,
+              });
+              handleDialogOpen();
+            }}
+          >
             <AddIcon />
           </IconButton>
         </TableCell>
