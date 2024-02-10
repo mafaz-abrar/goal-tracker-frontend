@@ -238,4 +238,6 @@ export async function flipTargeting(activityId: number) {
       body: formData,
     }
   );
+
+  return response.json();
 }

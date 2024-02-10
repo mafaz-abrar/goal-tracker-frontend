@@ -3,9 +3,11 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import { useContext } from 'react';
 import { Entry, WeeklyEntry, flipTargeting } from '../../api/api-interface';
 import GoalTrackerDisabledIcon from '../../assets/GoalTrackerDisabledIcon.png';
 import GoalTrackerIcon from '../../assets/GoalTrackerIcon.png';
+import { RowContext } from '../../pages/Home';
 import styles from './WeeklyEntryTable.module.css';
 
 interface WeeklyEntryProps {
@@ -14,8 +16,9 @@ interface WeeklyEntryProps {
   handleDialogOpen: () => void;
 }
 
-function postData(activityId: number) {
-  flipTargeting(activityId);
+async function postData(activityId: number) {
+  console.log(activityId);
+  await flipTargeting(activityId);
 }
 
 export default function WeeklyEntryRow({
@@ -23,13 +26,16 @@ export default function WeeklyEntryRow({
   setEntryData,
   handleDialogOpen,
 }: WeeklyEntryProps) {
+  const { setFlipped } = useContext(RowContext);
+
   return (
     <>
       <TableRow>
         <TableCell>
           <Button
-            onClick={() => {
-              postData(weeklyEntry.activity.activityId);
+            onClick={async () => {
+              await postData(weeklyEntry.activity.activityId);
+              setFlipped((val) => !val);
             }}
           >
             {weeklyEntry.activity.targeting ? (
@@ -93,7 +99,7 @@ export default function WeeklyEntryRow({
             onClick={() => {
               setEntryData({
                 date: new Date(),
-                taskDescription: weeklyEntry.activity.activityName,
+                activityId: weeklyEntry.activity.activityId,
               });
               handleDialogOpen();
             }}

@@ -1,6 +1,12 @@
 import Button from '@mui/material/Button';
 import dayjs, { Dayjs } from 'dayjs';
-import { useEffect, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useEffect,
+  useState,
+} from 'react';
 import {
   Entry,
   WeeklyEntry,
@@ -9,18 +15,27 @@ import {
 import EntryDialog from '../components/Dialogs/EntryDialog';
 import WeeklyEntryTable from '../components/WeeklyEntryTable/WeeklyEntryTable';
 
+/** TS is so dumb. WTF is this... */
+interface RowContextType {
+  setFlipped: Dispatch<SetStateAction<boolean>>;
+}
+
+export const RowContext = createContext<RowContextType>({
+  setFlipped: () => {},
+});
+
 export default function Home() {
   const [weeklyEntries, setWeeklyEntries] = useState<WeeklyEntry[]>([]);
   const [filterDate, setFilterDate] = useState<Dayjs>(dayjs());
   const [entryData, setEntryData] = useState<Partial<Entry>>({});
+  const [flipped, setFlipped] = useState<boolean>(false);
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    // Keeping this around to remind ourselves how to fetch async data.
-    console.log('Ran useEffect!');
+    console.log('useEffect triggered!');
 
     async function getData() {
       const data = await getWeeklyEntriesForDate(filterDate.toDate());
@@ -28,7 +43,7 @@ export default function Home() {
     }
 
     getData();
-  }, [filterDate, open]);
+  }, [filterDate, open, flipped]);
 
   return (
     <div
@@ -103,11 +118,14 @@ export default function Home() {
           Next Week
         </Button>
       </div>
-      <WeeklyEntryTable
-        weeklyEntries={weeklyEntries}
-        setEntryData={setEntryData}
-        handleDialogOpen={handleOpen}
-      />
+
+      <RowContext.Provider value={{ setFlipped }}>
+        <WeeklyEntryTable
+          weeklyEntries={weeklyEntries}
+          setEntryData={setEntryData}
+          handleDialogOpen={handleOpen}
+        />
+      </RowContext.Provider>
 
       <EntryDialog
         open={open}

@@ -7,7 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import TimeSpent from '../../api/TimeSpent';
 import {
@@ -47,26 +47,6 @@ export default function EntryDialog({
   const [selectedGoalWithActivities, setSelectedGoalWithActivities] =
     useState<GoalWithActivities | null>(null);
 
-  const [entryId, setEntryId] = useState<number | null>(null);
-  const [activityId, setActivityId] = useState<number | null>(
-    entry.activityId ? entry.activityId : null
-  );
-  const [date, setDate] = useState<Dayjs | null>(
-    entry ? dayjs(entry.date) : dayjs()
-  );
-  const [taskDescription, setTaskDescription] = useState<string | null>(
-    entry.taskDescription ?? ''
-  );
-  const [timeSpent, setTimeSpent] = useState<TimeSpent | null>(
-    entry.timeSpent ?? new TimeSpent().buildFromFormattedTimeString('00:05')
-  );
-  const [startTime, setStartTime] = useState<Dayjs | null>(
-    entry.startTime ? dayjs(entry.startTime) : null
-  );
-  const [endTime, setEndTime] = useState<Dayjs | null>(
-    entry.endTime ? dayjs(entry.endTime) : null
-  );
-
   const [error, setError] = useState<string>('');
 
   function clearData() {
@@ -104,7 +84,7 @@ export default function EntryDialog({
           }
           defaultValue={goalsWithActivities.find((goalWithActivity) =>
             goalWithActivity.activities.find(
-              (activity) => activity.activityId === activityId
+              (activity) => activity.activityId === entry.activityId
             )
           )}
           onChange={(event, value) => {
@@ -120,11 +100,12 @@ export default function EntryDialog({
           fullWidth
           getOptionLabel={(activity) => activity.activityName}
           defaultValue={selectedGoalWithActivities?.activities.find(
-            (activity) => activity.activityId === activityId
+            (activity) => activity.activityId === entry.activityId
           )}
           renderInput={(params) => <TextField {...params} label='Activity' />}
           onChange={(event, value) => {
-            if (value) setActivityId(value.activityId);
+            if (value)
+              setEntry((entry) => ({ ...entry, activityId: value.activityId }));
           }}
           sx={{
             marginTop: '10px',
@@ -134,9 +115,10 @@ export default function EntryDialog({
         <DatePicker
           sx={{ width: '100%', marginTop: '10px' }}
           label='Date'
-          value={date}
+          value={dayjs(entry.date)}
           onChange={(newDate) => {
-            if (newDate) setDate(newDate);
+            if (newDate)
+              setEntry((entry) => ({ ...entry, date: newDate.toDate() }));
           }}
         />
 
@@ -168,24 +150,31 @@ export default function EntryDialog({
           fullWidth
           variant='filled'
           onBlur={(event) =>
-            setTimeSpent(
-              new TimeSpent().buildFromFormattedTimeString(event.target.value)
-            )
+            setEntry((entry) => ({
+              ...entry,
+              timeSpent: new TimeSpent().buildFromFormattedTimeString(
+                event.target.value
+              ),
+            }))
           }
         />
 
         <TimePicker
           label='Start Time'
           sx={{ width: '100%', marginTop: '10px' }}
-          value={startTime}
-          onChange={(newStartTime) => setStartTime(newStartTime)}
+          value={entry.startTime}
+          onChange={(newStartTime) =>
+            setEntry((entry) => ({ ...entry, startTime: newStartTime }))
+          }
         />
 
         <TimePicker
           label='End Time '
           sx={{ width: '100%', marginTop: '10px' }}
-          value={endTime}
-          onChange={(newEndTime) => setEndTime(newEndTime)}
+          value={entry.endTime}
+          onChange={(newEndTime) =>
+            setEntry((entry) => ({ ...entry, endTime: newEndTime }))
+          }
         />
       </DialogContent>
       <DialogActions>
@@ -200,20 +189,9 @@ export default function EntryDialog({
         <Button
           onClick={() => {
             // For Edit mode, pass in an Entry, then set State directly, don't build an Entry.
-
-            const entryForSubmit: Partial<Entry> = {
-              entryId: entry.entryId,
-              date: date?.toDate(),
-              activityId: activityId ?? undefined,
-              taskDescription: taskDescription ?? undefined,
-              timeSpent: timeSpent ?? undefined,
-              startTime: startTime ? startTime.toDate() : null,
-              endTime: endTime ? endTime.toDate() : null,
-            };
-
             try {
-              const entry = validateEntryForAdd(entryForSubmit);
-              postData(entry);
+              const entryForPost = validateEntryForAdd(entry);
+              postData(entryForPost);
               clearData();
               onClose();
             } catch (err) {
