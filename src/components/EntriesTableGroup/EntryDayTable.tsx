@@ -21,7 +21,7 @@ interface EntryTableProps {
 }
 
 export default function EntryTable({ day }: EntryTableProps) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
     <TableContainer

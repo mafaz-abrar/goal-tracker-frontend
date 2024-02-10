@@ -1,13 +1,14 @@
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
-import { Entry, WeeklyEntry } from '../../api/api-interface';
+import { Entry, Goal, WeeklyEntry } from '../../api/api-interface';
 import WeeklyEntryHeader from './WeeklyEntryHeader';
 import WeeklyEntryRow from './WeeklyEntryRow';
 
 interface WeeklyEntryTableProps {
   weeklyEntries: WeeklyEntry[];
   setEntryData: React.Dispatch<React.SetStateAction<Partial<Entry>>>;
+  setSelectedGoal: React.Dispatch<React.SetStateAction<Goal | null>>;
   handleDialogOpen: () => void;
   style?: React.CSSProperties;
 }
@@ -15,6 +16,7 @@ interface WeeklyEntryTableProps {
 export default function WeeklyEntryTable({
   weeklyEntries,
   setEntryData,
+  setSelectedGoal,
   handleDialogOpen,
   style,
 }: WeeklyEntryTableProps) {
@@ -53,6 +55,7 @@ export default function WeeklyEntryTable({
               weeklyEntry={weeklyEntry}
               setEntryData={setEntryData}
               handleDialogOpen={handleDialogOpen}
+              setSelectedGoal={setSelectedGoal}
             />
           );
         })}

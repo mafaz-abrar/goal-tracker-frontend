@@ -184,6 +184,54 @@ export async function getAllEntriesForDate(date: Date): Promise<Entry[]> {
   return camelcaseKeysDeep(await response.json());
 }
 
+export async function getAllEntriesForWeek(
+  date: Date
+): Promise<DayWithExpandedEntries[]> {
+  const response = await fetch(
+    `http://goal-tracker-backend/api/all_entries_for_week?filter_date=${dayjs(
+      date
+    ).format('YYYY-MM-DD')}`
+  );
+
+  const data = camelcaseKeysDeep(await response.json());
+
+  const returnVal = data.map(
+    (dayWithExpandedEntry: SimpleDayWithExpandedEntries) => {
+      const processedEntries = dayWithExpandedEntry.expandedEntries.map(
+        (expandedEntry: SimpleExpandedEntry) => {
+          console.log(expandedEntry);
+
+          return {
+            goalName: expandedEntry.goalName,
+            activityName: expandedEntry.activityName,
+            entry: {
+              entryId: expandedEntry.entry.entryId,
+              date: new Date(expandedEntry.entry.date),
+              activityId: expandedEntry.entry.activityId,
+              taskDescription: expandedEntry.entry.taskDescription,
+              timeSpent: new TimeSpent(expandedEntry.entry.timeSpent / 60),
+              startTime: expandedEntry.entry.startTime
+                ? new Date(expandedEntry.entry.startTime)
+                : null,
+              endTime: expandedEntry.entry.endTime
+                ? new Date(expandedEntry.entry.endTime)
+                : null,
+            },
+          };
+        }
+      );
+
+      return {
+        date: new Date(dayWithExpandedEntry.date),
+        expandedEntries: processedEntries,
+      };
+    }
+  );
+
+  console.log(returnVal);
+  return returnVal;
+}
+
 export async function getAllEntriesForActivity(
   activityId: number
 ): Promise<Entry[]> {
@@ -204,6 +252,10 @@ export async function addNewEntry(entry: Entry) {
   formData.append('date', dayjs(entry.date).format('YYYY-MM-DD'));
   formData.append('task_description', entry.taskDescription);
   formData.append('hours', entry.timeSpent.toString());
+  if (entry.startTime)
+    formData.append('start_time', dayjs(entry.startTime).format('HH-mm-ss'));
+  if (entry.endTime)
+    formData.append('end_time', dayjs(entry.endTime).format('HH-mm-ss'));
 
   console.log(formData.get('activity_id'));
   const response = await fetch(
@@ -240,4 +292,18 @@ export async function flipTargeting(activityId: number) {
   );
 
   return response.json();
+}
+
+export async function getAllActivities() {
+  const response = await fetch(
+    `http://goal-tracker-backend/api/all_activities.php`
+  );
+
+  return camelcaseKeysDeep(await response.json());
+}
+
+export async function getAllGoals() {
+  const response = await fetch(`http://goal-tracker-backend/api/all_goals.php`);
+
+  return camelcaseKeysDeep(await response.json());
 }

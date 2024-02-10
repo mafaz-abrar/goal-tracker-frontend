@@ -6,6 +6,7 @@ import {
   getAllGoalsAndActivities,
 } from '../api/api-interface';
 import GoalsAndActivitiesTableGroup from '../components/GoalsAndActivitiesTableGroup/GoalsAndActivitiesTableGroup';
+import { RowContext } from './Home';
 
 function filterGoalsBySearchTerm(
   goalsWithActivities: GoalWithActivities[],
@@ -44,6 +45,7 @@ export default function GoalsAndActivities() {
   const [goalsWithActivities, setGoalsWithActivities] = useState<
     GoalWithActivities[]
   >([]);
+  const [flipped, setFlipped] = useState<boolean>(false);
 
   useEffect(() => {
     async function getData() {
@@ -52,7 +54,7 @@ export default function GoalsAndActivities() {
       setGoalsWithActivities(response);
     }
     getData();
-  }, []);
+  }, [flipped]);
 
   return (
     <div
@@ -97,12 +99,14 @@ export default function GoalsAndActivities() {
         }}
       />
 
-      <GoalsAndActivitiesTableGroup
-        goalsWithActivities={filterGoalsBySearchTerm(
-          goalsWithActivities,
-          searchTerm
-        )}
-      />
+      <RowContext.Provider value={{ setFlipped }}>
+        <GoalsAndActivitiesTableGroup
+          goalsWithActivities={filterGoalsBySearchTerm(
+            goalsWithActivities,
+            searchTerm
+          )}
+        />
+      </RowContext.Provider>
     </div>
   );
 }

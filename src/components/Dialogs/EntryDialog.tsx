@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import TimeSpent from '../../api/TimeSpent';
 import {
   Entry,
+  Goal,
   GoalWithActivities,
   addNewEntry,
   getAllGoalsAndActivities,
@@ -22,13 +23,10 @@ import ErrorHandler from '../ErrorHandler/ErrorHandler';
 interface EntryDialogProps {
   open: boolean;
   handleClose: () => void;
-  // in fact, no need to pass a Partial Entry here, just directly pass the properties of Entry that
-  // we know can be passed in:
-  // entry Id (for edit) + all
-  // activity Id, date for weeklyEntry context
-  // can we use useContext for this?
   entry: Partial<Entry>;
   setEntry: React.Dispatch<React.SetStateAction<Partial<Entry>>>;
+  selectedGoal: Goal | null;
+  setSelectedGoal: React.Dispatch<React.SetStateAction<Goal | null>>;
 }
 
 async function postData(entry: Entry) {
@@ -40,12 +38,12 @@ export default function EntryDialog({
   handleClose,
   entry,
   setEntry,
+  selectedGoal,
+  setSelectedGoal,
 }: EntryDialogProps) {
   const [goalsWithActivities, setGoalsWithActivities] = useState<
     GoalWithActivities[]
   >([]);
-  const [selectedGoalWithActivities, setSelectedGoalWithActivities] =
-    useState<GoalWithActivities | null>(null);
 
   const [error, setError] = useState<string>('');
 
@@ -61,16 +59,17 @@ export default function EntryDialog({
     }
 
     getData();
-  }, []);
+  }, [open]);
 
   function onClose() {
-    setSelectedGoalWithActivities(null);
+    setSelectedGoal(null);
+    setError('');
     handleClose();
   }
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{entry.taskDescription}</DialogTitle>
+      <DialogTitle>Add Entry</DialogTitle>
 
       <DialogContent>
         {error !== '' ? <ErrorHandler errorMsg={error} /> : <></>}
@@ -82,13 +81,12 @@ export default function EntryDialog({
           getOptionLabel={(goalWithActivities) =>
             goalWithActivities.goal.goalName
           }
-          defaultValue={goalsWithActivities.find((goalWithActivity) =>
-            goalWithActivity.activities.find(
-              (activity) => activity.activityId === entry.activityId
-            )
+          defaultValue={goalsWithActivities.find(
+            (goalWithActivity) =>
+              goalWithActivity.goal.goalId === selectedGoal?.goalId
           )}
           onChange={(event, value) => {
-            setSelectedGoalWithActivities(value);
+            setSelectedGoal(value?.goal ?? null);
           }}
           sx={{
             marginTop: '10px',
@@ -96,12 +94,22 @@ export default function EntryDialog({
         />
 
         <Autocomplete
-          options={selectedGoalWithActivities?.activities ?? []}
+          options={
+            goalsWithActivities.find(
+              (goalWithActivity) =>
+                goalWithActivity.goal.goalId === selectedGoal?.goalId
+            )?.activities ?? []
+          }
           fullWidth
+          defaultValue={goalsWithActivities
+            .find(
+              (goalWithActivity) =>
+                goalWithActivity.goal.goalId === selectedGoal?.goalId
+            )
+            ?.activities.find(
+              (activity) => activity.activityId === entry.activityId
+            )}
           getOptionLabel={(activity) => activity.activityName}
-          defaultValue={selectedGoalWithActivities?.activities.find(
-            (activity) => activity.activityId === entry.activityId
-          )}
           renderInput={(params) => <TextField {...params} label='Activity' />}
           onChange={(event, value) => {
             if (value)

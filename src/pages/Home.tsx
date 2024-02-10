@@ -9,6 +9,7 @@ import {
 } from 'react';
 import {
   Entry,
+  Goal,
   WeeklyEntry,
   getWeeklyEntriesForDate,
 } from '../api/api-interface';
@@ -26,6 +27,7 @@ export const RowContext = createContext<RowContextType>({
 
 export default function Home() {
   const [weeklyEntries, setWeeklyEntries] = useState<WeeklyEntry[]>([]);
+  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [filterDate, setFilterDate] = useState<Dayjs>(dayjs());
   const [entryData, setEntryData] = useState<Partial<Entry>>({});
   const [flipped, setFlipped] = useState<boolean>(false);
@@ -123,6 +125,7 @@ export default function Home() {
         <WeeklyEntryTable
           weeklyEntries={weeklyEntries}
           setEntryData={setEntryData}
+          setSelectedGoal={setSelectedGoal}
           handleDialogOpen={handleOpen}
         />
       </RowContext.Provider>
@@ -132,6 +135,8 @@ export default function Home() {
         handleClose={handleClose}
         entry={entryData}
         setEntry={setEntryData}
+        selectedGoal={selectedGoal}
+        setSelectedGoal={setSelectedGoal}
       />
     </div>
   );

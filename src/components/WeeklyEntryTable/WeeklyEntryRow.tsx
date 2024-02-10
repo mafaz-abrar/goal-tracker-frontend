@@ -4,7 +4,12 @@ import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { useContext } from 'react';
-import { Entry, WeeklyEntry, flipTargeting } from '../../api/api-interface';
+import {
+  Entry,
+  Goal,
+  WeeklyEntry,
+  flipTargeting,
+} from '../../api/api-interface';
 import GoalTrackerDisabledIcon from '../../assets/GoalTrackerDisabledIcon.png';
 import GoalTrackerIcon from '../../assets/GoalTrackerIcon.png';
 import { RowContext } from '../../pages/Home';
@@ -14,6 +19,7 @@ interface WeeklyEntryProps {
   weeklyEntry: WeeklyEntry;
   setEntryData: React.Dispatch<React.SetStateAction<Partial<Entry>>>;
   handleDialogOpen: () => void;
+  setSelectedGoal: React.Dispatch<React.SetStateAction<Goal | null>>;
 }
 
 async function postData(activityId: number) {
@@ -25,6 +31,7 @@ export default function WeeklyEntryRow({
   weeklyEntry,
   setEntryData,
   handleDialogOpen,
+  setSelectedGoal,
 }: WeeklyEntryProps) {
   const { setFlipped } = useContext(RowContext);
 
@@ -100,6 +107,10 @@ export default function WeeklyEntryRow({
               setEntryData({
                 date: new Date(),
                 activityId: weeklyEntry.activity.activityId,
+              });
+              setSelectedGoal({
+                goalId: weeklyEntry.activity.goalId,
+                goalName: weeklyEntry.goalName,
               });
               handleDialogOpen();
             }}

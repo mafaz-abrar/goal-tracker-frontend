@@ -10,10 +10,6 @@ function checkValidEntry(partialEntry: Partial<Entry>): Entry {
     throw new Error('Task Desc undefined!');
   if (partialEntry.timeSpent === undefined)
     throw new Error('Time spent undefined!');
-  if (partialEntry.startTime === undefined)
-    throw new Error('Start time undefined!');
-  if (partialEntry.endTime === undefined)
-    throw new Error('End time undefined!');
 
   return {
     entryId: partialEntry.entryId,
@@ -21,8 +17,8 @@ function checkValidEntry(partialEntry: Partial<Entry>): Entry {
     date: partialEntry.date,
     taskDescription: partialEntry.taskDescription,
     timeSpent: partialEntry.timeSpent,
-    startTime: partialEntry.startTime,
-    endTime: partialEntry.endTime,
+    startTime: partialEntry.startTime ?? null,
+    endTime: partialEntry.endTime ?? null,
   };
 }
 

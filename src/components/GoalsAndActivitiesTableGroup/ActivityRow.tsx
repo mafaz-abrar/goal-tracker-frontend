@@ -4,20 +4,34 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { Activity } from '../../api/api-interface';
+import { useContext } from 'react';
+import { Activity, flipTargeting } from '../../api/api-interface';
 import GoalTrackerDisabledIcon from '../../assets/GoalTrackerDisabledIcon.png';
 import GoalTrackerIcon from '../../assets/GoalTrackerIcon.png';
+import { RowContext } from '../../pages/Home';
+
+async function postData(activityId: number) {
+  console.log(activityId);
+  await flipTargeting(activityId);
+}
 
 interface ActivityRowProps {
   activity: Activity;
 }
 
 export default function ActivityRow({ activity }: ActivityRowProps) {
+  const { setFlipped } = useContext(RowContext);
+
   return (
     <TableRow>
       <TableCell sx={{ width: '80%' }}>{activity.activityName}</TableCell>
       <TableCell sx={{ textAlign: 'center', alignItems: 'center' }}>
-        <Button>
+        <Button
+          onClick={async () => {
+            await postData(activity.activityId);
+            setFlipped((val) => !val);
+          }}
+        >
           {activity.targeting ? (
             <img
               src={GoalTrackerIcon}
