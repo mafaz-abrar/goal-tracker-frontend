@@ -4,10 +4,16 @@ export default class TimeSpent {
   private totalMinutes: number;
 
   // Formatted Time String looks like: 25:00.
-  private parseMinutesFormattedTimeString(formattedTimeString: string): number {
+  private static parseMinutesFromFormattedTimeString(
+    formattedTimeString: string
+  ): number {
     const timeArray = formattedTimeString.split(':');
 
-    if (timeArray.length !== 2)
+    if (
+      timeArray.length !== 2 ||
+      timeArray[0].length !== 2 ||
+      timeArray[1].length !== 2
+    )
       throw new Error(
         `TimeSpent: Wrong format used for ${formattedTimeString}`
       );
@@ -26,13 +32,33 @@ export default class TimeSpent {
     }
   }
 
-  public buildFromFormattedTimeString(formattedTimeString: string) {
-    if (formattedTimeString === '') return this;
+  public static buildFromFormattedTimeString(
+    formattedTimeString: string
+  ): TimeSpent {
+    const newTimeSpent = new TimeSpent();
 
-    this.totalMinutes =
-      this.parseMinutesFormattedTimeString(formattedTimeString);
+    if (formattedTimeString === '') return newTimeSpent;
 
-    return this;
+    newTimeSpent.totalMinutes =
+      TimeSpent.parseMinutesFromFormattedTimeString(formattedTimeString);
+
+    return newTimeSpent;
+  }
+
+  public static validateTimeString(unformattedTimeString: string): boolean {
+    try {
+      TimeSpent.parseMinutesFromFormattedTimeString(unformattedTimeString);
+      return true;
+    } catch (err) {
+      if (
+        err instanceof Error &&
+        err.message.includes('TimeSpent: Wrong format used for')
+      ) {
+        return false;
+      } else {
+        throw err;
+      }
+    }
   }
 
   public getHours(): number {

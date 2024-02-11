@@ -13,14 +13,22 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { DayWithExpandedEntries } from '../../api/api-interface';
+import { DayWithExpandedEntries, Entry, Goal } from '../../api/api-interface';
 import EntryRow from './EntryRow';
 
 interface EntryTableProps {
   day: DayWithExpandedEntries;
+  setEntryData: React.Dispatch<React.SetStateAction<Partial<Entry>>>;
+  setSelectedGoal: React.Dispatch<React.SetStateAction<Goal | null>>;
+  handleDialogOpen: () => void;
 }
 
-export default function EntryTable({ day }: EntryTableProps) {
+export default function EntryTable({
+  day,
+  setEntryData,
+  setSelectedGoal,
+  handleDialogOpen,
+}: EntryTableProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -83,7 +91,12 @@ export default function EntryTable({ day }: EntryTableProps) {
                 </TableHead>
                 <TableBody>
                   {day.expandedEntries.map((expandedEntry) => (
-                    <EntryRow expandedEntry={expandedEntry} />
+                    <EntryRow
+                      expandedEntry={expandedEntry}
+                      setEntryData={setEntryData}
+                      handleDialogOpen={handleDialogOpen}
+                      setSelectedGoal={setSelectedGoal}
+                    />
                   ))}
                 </TableBody>
               </Table>

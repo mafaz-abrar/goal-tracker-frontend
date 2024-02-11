@@ -3,13 +3,24 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import {
   DayWithExpandedEntries,
+  Entry,
+  Goal,
   getAllEntriesForWeek,
 } from '../api/api-interface';
+import EntryDialog from '../components/Dialogs/EntryDialog';
 import EntryTableGroup from '../components/EntriesTableGroup/EntryTableGroup';
+import { RowContext } from './Home';
 
 export default function Entries() {
   const [data, setData] = useState<DayWithExpandedEntries[]>([]);
   const [filterDate, setFilterDate] = useState<Dayjs>(dayjs());
+  const [flipped, setFlipped] = useState<boolean>(false);
+  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
+  const [entryData, setEntryData] = useState<Partial<Entry>>({});
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     async function getEntries() {
@@ -18,7 +29,7 @@ export default function Entries() {
     }
 
     getEntries();
-  }, [filterDate]);
+  }, [filterDate, flipped]);
 
   return (
     <div
@@ -93,7 +104,24 @@ export default function Entries() {
           Next Week
         </Button>
       </div>
-      <EntryTableGroup days={data} />
+
+      <RowContext.Provider value={{ setFlipped }}>
+        <EntryTableGroup
+          days={data}
+          setEntryData={setEntryData}
+          handleDialogOpen={handleOpen}
+          setSelectedGoal={setSelectedGoal}
+        />
+      </RowContext.Provider>
+
+      <EntryDialog
+        open={open}
+        handleClose={handleClose}
+        entry={entryData}
+        setEntry={setEntryData}
+        selectedGoal={selectedGoal}
+        setSelectedGoal={setSelectedGoal}
+      />
     </div>
   );
 }

@@ -195,48 +195,56 @@ const weeklyEntry4: WeeklyEntry = {
 
 const expandedEntry1: ExpandedEntry = {
   goalName: 'expanded entry 1 goal',
+  goalId: goal1.goalId,
   activityName: 'expanded entry 1 activity',
   entry: entry1,
 };
 
 const expandedEntry2: ExpandedEntry = {
   goalName: 'expanded entry 2 goal',
+  goalId: goal1.goalId,
   activityName: 'expanded entry 2 activity',
   entry: entry2,
 };
 
 const expandedEntry3: ExpandedEntry = {
   goalName: 'expanded entry 3 goal',
+  goalId: goal1.goalId,
   activityName: 'expanded entry 3 activity',
   entry: entry3,
 };
 
 const expandedEntry4: ExpandedEntry = {
   goalName: 'expanded entry 4 goal',
+  goalId: goal1.goalId,
   activityName: 'expanded entry 4 activity',
   entry: entry4,
 };
 
 const expandedEntry5: ExpandedEntry = {
   goalName: 'expanded entry 5 goal',
+  goalId: goal2.goalId,
   activityName: 'expanded entry 5 activity',
   entry: entry5,
 };
 
 const expandedEntry6: ExpandedEntry = {
   goalName: 'expanded entry 6 goal',
+  goalId: goal2.goalId,
   activityName: 'expanded entry 6 activity',
   entry: entry6,
 };
 
 const expandedEntry7: ExpandedEntry = {
   goalName: 'expanded entry 7 goal',
+  goalId: goal2.goalId,
   activityName: 'expanded entry 7 activity',
   entry: entry7,
 };
 
 const expandedEntry8: ExpandedEntry = {
   goalName: 'expanded entry 8 goal',
+  goalId: goal2.goalId,
   activityName: 'expanded entry 8 activity',
   entry: entry8,
 };

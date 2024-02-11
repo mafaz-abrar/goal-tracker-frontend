@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import TimeSpent from '../../api/TimeSpent';
 import {
+  Activity,
   Entry,
   Goal,
   GoalWithActivities,
@@ -19,6 +20,30 @@ import {
 } from '../../api/api-interface';
 import { validateEntryForAdd } from '../../validators/entry-validator';
 import ErrorHandler from '../ErrorHandler/ErrorHandler';
+
+function findGoalFromActivityId(
+  goals: GoalWithActivities[],
+  givenActivityId: number
+): GoalWithActivities | null {
+  const foundGoal = goals.find((goal: GoalWithActivities) => {
+    return goal.activities.find(
+      (activity: Activity) => activity.activityId === givenActivityId
+    );
+  });
+
+  return foundGoal ?? null;
+}
+
+function findActivityFromActivityId(
+  activities: Activity[],
+  givenActivityId: number
+): Activity | null {
+  const foundActivity = activities.find(
+    (activity: Activity) => activity.activityId === givenActivityId
+  );
+
+  return foundActivity ?? null;
+}
 
 interface EntryDialogProps {
   open: boolean;
@@ -33,17 +58,24 @@ async function postData(entry: Entry) {
   return addNewEntry(entry);
 }
 
+type GoalOption = GoalWithActivities;
+type ActivityOption = Activity;
+
 export default function EntryDialog({
   open,
   handleClose,
   entry,
   setEntry,
-  selectedGoal,
-  setSelectedGoal,
 }: EntryDialogProps) {
-  const [goalsWithActivities, setGoalsWithActivities] = useState<
-    GoalWithActivities[]
-  >([]);
+  const [goalOptions, setGoalOptions] = useState<GoalOption[]>([]);
+  const [activityOptions, setActivityOptions] = useState<ActivityOption[]>([]);
+
+  const [selectedGoalOption, setSelectedGoalOption] =
+    useState<GoalOption | null>(null);
+  const [selectedActivityOption, setSelectedActivityOption] =
+    useState<ActivityOption | null>(null);
+
+  const [timeSpentString, setTimeSpentString] = useState<string>('');
 
   const [error, setError] = useState<string>('');
 
@@ -51,42 +83,69 @@ export default function EntryDialog({
     setEntry({});
   }
 
+  // Default: Gets all goal data.
   useEffect(() => {
-    async function getData() {
-      const response = await getAllGoalsAndActivities();
-
-      setGoalsWithActivities(response);
+    async function getGoalOptions() {
+      setGoalOptions(await getAllGoalsAndActivities());
     }
 
-    getData();
+    if (open) {
+      getGoalOptions();
+    }
   }, [open]);
 
+  // Gets activity data from a selected goal.
+  useEffect(() => {
+    if (open && selectedGoalOption)
+      setActivityOptions(selectedGoalOption.activities);
+  }, [selectedGoalOption, open]);
+
+  // Handle entry data if exists
+  useEffect(() => {
+    if (open && entry.activityId && goalOptions && activityOptions) {
+      setSelectedGoalOption(
+        findGoalFromActivityId(goalOptions, entry.activityId)
+      );
+      setSelectedActivityOption(
+        findActivityFromActivityId(activityOptions, entry.activityId)
+      );
+    }
+  }, [open, entry, goalOptions, activityOptions]);
+
+  useEffect(() => {
+    if (open && entry.timeSpent) {
+      setTimeSpentString(entry.timeSpent.toString());
+    }
+  }, [open, entry]);
+
   function onClose() {
-    setSelectedGoal(null);
+    setSelectedGoalOption(null);
+    setSelectedActivityOption(null);
+    setTimeSpentString('');
     setError('');
     handleClose();
   }
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add Entry</DialogTitle>
+      <DialogTitle>Entry</DialogTitle>
 
       <DialogContent>
         {error !== '' ? <ErrorHandler errorMsg={error} /> : <></>}
 
         <Autocomplete
-          options={goalsWithActivities}
+          options={goalOptions}
           fullWidth
           renderInput={(params) => <TextField {...params} label='Goal' />}
-          getOptionLabel={(goalWithActivities) =>
+          getOptionLabel={(goalWithActivities: GoalOption) =>
             goalWithActivities.goal.goalName
           }
-          defaultValue={goalsWithActivities.find(
-            (goalWithActivity) =>
-              goalWithActivity.goal.goalId === selectedGoal?.goalId
-          )}
-          onChange={(event, value) => {
-            setSelectedGoal(value?.goal ?? null);
+          isOptionEqualToValue={(option, value) =>
+            option.goal.goalId === value.goal.goalId
+          }
+          value={selectedGoalOption}
+          onChange={(event: any, newValue: GoalOption | null) => {
+            setSelectedGoalOption(newValue);
           }}
           sx={{
             marginTop: '10px',
@@ -94,26 +153,19 @@ export default function EntryDialog({
         />
 
         <Autocomplete
-          options={
-            goalsWithActivities.find(
-              (goalWithActivity) =>
-                goalWithActivity.goal.goalId === selectedGoal?.goalId
-            )?.activities ?? []
-          }
+          options={activityOptions}
           fullWidth
-          defaultValue={goalsWithActivities
-            .find(
-              (goalWithActivity) =>
-                goalWithActivity.goal.goalId === selectedGoal?.goalId
-            )
-            ?.activities.find(
-              (activity) => activity.activityId === entry.activityId
-            )}
-          getOptionLabel={(activity) => activity.activityName}
+          getOptionLabel={(activity: ActivityOption) => activity.activityName}
+          isOptionEqualToValue={(option, value) =>
+            option.activityId === value.activityId
+          }
           renderInput={(params) => <TextField {...params} label='Activity' />}
-          onChange={(event, value) => {
-            if (value)
+          value={selectedActivityOption}
+          onChange={(event: any, value: ActivityOption | null) => {
+            setSelectedActivityOption(value);
+            if (value) {
               setEntry((entry) => ({ ...entry, activityId: value.activityId }));
+            }
           }}
           sx={{
             marginTop: '10px',
@@ -149,22 +201,30 @@ export default function EntryDialog({
         />
 
         <TextField
+          error={
+            timeSpentString !== '' &&
+            !TimeSpent.validateTimeString(timeSpentString)
+          }
           autoFocus
           margin='dense'
           id='name'
           label='Hours'
           helperText='Time format: HH:mm e.g. 25:00 is 25 hours.'
-          type='email'
+          type='text'
           fullWidth
           variant='filled'
-          onBlur={(event) =>
-            setEntry((entry) => ({
-              ...entry,
-              timeSpent: new TimeSpent().buildFromFormattedTimeString(
-                event.target.value
-              ),
-            }))
-          }
+          value={timeSpentString}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setTimeSpentString(event.target.value);
+
+            if (TimeSpent.validateTimeString(timeSpentString)) {
+              setEntry((entry) => ({
+                ...entry,
+                timeSpent:
+                  TimeSpent.buildFromFormattedTimeString(timeSpentString),
+              }));
+            }
+          }}
         />
 
         <TimePicker

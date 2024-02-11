@@ -6,17 +6,13 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { Goal } from '../../api/api-interface';
 
-interface AddGoalDialogProps {
+interface GoalDialogProps {
   open: boolean;
   onClose: () => void;
   goal?: Goal;
 }
 
-export default function AddGoalDialog({
-  open,
-  onClose,
-  goal,
-}: AddGoalDialogProps) {
+export default function GoalDialog({ open, onClose, goal }: GoalDialogProps) {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add Goal</DialogTitle>
@@ -26,9 +22,11 @@ export default function AddGoalDialog({
           margin='dense'
           id='name'
           label='Email Address'
-          type='email'
+          type='text'
           fullWidth
           variant='filled'
+          defaultValue={goal?.goalName}
+          value={goal?.goalName}
         />
       </DialogContent>
       <DialogActions>

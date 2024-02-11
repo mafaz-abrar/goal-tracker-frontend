@@ -4,6 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { useContext } from 'react';
+import TimeSpent from '../../api/TimeSpent';
 import {
   Entry,
   Goal,
@@ -107,6 +108,8 @@ export default function WeeklyEntryRow({
               setEntryData({
                 date: new Date(),
                 activityId: weeklyEntry.activity.activityId,
+                taskDescription: '✅',
+                timeSpent: new TimeSpent(5),
               });
               setSelectedGoal({
                 goalId: weeklyEntry.activity.goalId,

@@ -7,17 +7,17 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { Activity } from '../../api/api-interface';
 
-interface AddActivityDialogProps {
+interface ActivityDialogProps {
   open: boolean;
   onClose: () => void;
   activity?: Activity;
 }
 
-export default function AddActivityDialog({
+export default function ActivityDialog({
   open,
   onClose,
   activity,
-}: AddActivityDialogProps) {
+}: ActivityDialogProps) {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add Activity</DialogTitle>

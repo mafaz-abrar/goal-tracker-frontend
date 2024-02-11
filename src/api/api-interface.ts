@@ -49,6 +49,7 @@ type SimpleExpandedEntry = {
 
 export type ExpandedEntry = {
   goalName: string;
+  goalId: number;
   activityName: string;
   entry: Entry;
 };
@@ -88,6 +89,19 @@ export type WeeklyEntry = {
   saturdayTime: TimeSpent;
   sundayTime: TimeSpent;
 };
+
+function getDateObjectFromTimeString(timeString: string, date: Date): Date {
+  const elements = timeString.split(':');
+  const hours = elements[0];
+  const minutes = elements[1];
+  const seconds = elements[2];
+
+  return dayjs(date)
+    .set('hour', +hours)
+    .set('minute', +minutes)
+    .set('second', +seconds)
+    .toDate();
+}
 
 export async function getWeeklyEntriesForDate(
   date: Date
@@ -211,10 +225,16 @@ export async function getAllEntriesForWeek(
               taskDescription: expandedEntry.entry.taskDescription,
               timeSpent: new TimeSpent(expandedEntry.entry.timeSpent / 60),
               startTime: expandedEntry.entry.startTime
-                ? new Date(expandedEntry.entry.startTime)
+                ? getDateObjectFromTimeString(
+                    expandedEntry.entry.startTime,
+                    new Date(expandedEntry.entry.date)
+                  )
                 : null,
               endTime: expandedEntry.entry.endTime
-                ? new Date(expandedEntry.entry.endTime)
+                ? getDateObjectFromTimeString(
+                    expandedEntry.entry.endTime,
+                    new Date(expandedEntry.entry.date)
+                  )
                 : null,
             },
           };
@@ -253,11 +273,13 @@ export async function addNewEntry(entry: Entry) {
   formData.append('task_description', entry.taskDescription);
   formData.append('hours', entry.timeSpent.toString());
   if (entry.startTime)
-    formData.append('start_time', dayjs(entry.startTime).format('HH-mm-ss'));
+    formData.append('start_time', dayjs(entry.startTime).format('HH:mm:ss'));
   if (entry.endTime)
-    formData.append('end_time', dayjs(entry.endTime).format('HH-mm-ss'));
+    formData.append('end_time', dayjs(entry.endTime).format('HH:mm:ss'));
 
   console.log(formData.get('activity_id'));
+  console.log(entry.startTime);
+
   const response = await fetch(
     `http://goal-tracker-backend/api/entry_process.php?mode=add`,
     {
@@ -273,7 +295,20 @@ export async function postActivity(activity: Activity) {}
 
 export async function postGoal(goal: Goal) {}
 
-export async function deleteEntry(entryId: number) {}
+export async function deleteEntry(entryId: number) {
+  const formData = new FormData();
+  formData.append('entry_id', entryId.toString());
+
+  const response = await fetch(
+    `http://goal-tracker-backend/api/entry_process.php?mode=delete`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  return await response.json();
+}
 
 export async function deleteActivity(activityId: number) {}
 
