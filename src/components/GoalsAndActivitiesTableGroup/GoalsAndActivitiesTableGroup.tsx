@@ -12,8 +12,8 @@ export default function GoalsAndActivitiesTableGroup({
 }: GoalsAndActivitiesTableGroupProps) {
   return (
     <div style={style}>
-      {goalsWithActivities.map((goalWithActivities) => (
-        <GoalTable goalWithActivities={goalWithActivities} />
+      {goalsWithActivities.map((goalWithActivities, index) => (
+        <GoalTable key={index} goalWithActivities={goalWithActivities} />
       ))}
     </div>
   );

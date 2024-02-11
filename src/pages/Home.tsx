@@ -7,13 +7,15 @@ import {
   useEffect,
   useState,
 } from 'react';
+import TimeSpent from '../api/TimeSpent';
 import {
   Entry,
-  Goal,
   WeeklyEntry,
   getWeeklyEntriesForDate,
 } from '../api/api-interface';
-import EntryDialog from '../components/Dialogs/EntryDialog';
+import EntryDialog, {
+  EntryDialogMode,
+} from '../components/Dialogs/EntryDialog';
 import WeeklyEntryTable from '../components/WeeklyEntryTable/WeeklyEntryTable';
 
 /** TS is so dumb. WTF is this... */
@@ -25,9 +27,16 @@ export const RowContext = createContext<RowContextType>({
   setFlipped: () => {},
 });
 
+interface ModeContextType {
+  setMode: Dispatch<SetStateAction<EntryDialogMode>>;
+}
+
+export const ModeContext = createContext<ModeContextType>({
+  setMode: () => {},
+});
+
 export default function Home() {
   const [weeklyEntries, setWeeklyEntries] = useState<WeeklyEntry[]>([]);
-  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [filterDate, setFilterDate] = useState<Dayjs>(dayjs());
   const [entryData, setEntryData] = useState<Partial<Entry>>({});
   const [flipped, setFlipped] = useState<boolean>(false);
@@ -36,9 +45,9 @@ export default function Home() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  useEffect(() => {
-    console.log('useEffect triggered!');
+  const [mode, setMode] = useState<EntryDialogMode>(EntryDialogMode.AddMode);
 
+  useEffect(() => {
     async function getData() {
       const data = await getWeeklyEntriesForDate(filterDate.toDate());
       setWeeklyEntries(data);
@@ -76,7 +85,16 @@ export default function Home() {
             height: '7vh',
           }}
           variant='outlined'
-          onClick={handleOpen}
+          onClick={() => {
+            setEntryData({
+              taskDescription: '✅',
+              timeSpent: new TimeSpent(5),
+              startTime: new Date(),
+              endTime: new Date(new Date().getTime() + 5 * 60000), // Add 5 minutes
+            });
+            setMode(EntryDialogMode.AddMode);
+            handleOpen();
+          }}
         >
           Add Entry
         </Button>
@@ -121,22 +139,22 @@ export default function Home() {
         </Button>
       </div>
 
-      <RowContext.Provider value={{ setFlipped }}>
-        <WeeklyEntryTable
-          weeklyEntries={weeklyEntries}
-          setEntryData={setEntryData}
-          setSelectedGoal={setSelectedGoal}
-          handleDialogOpen={handleOpen}
-        />
-      </RowContext.Provider>
+      <ModeContext.Provider value={{ setMode }}>
+        <RowContext.Provider value={{ setFlipped }}>
+          <WeeklyEntryTable
+            weeklyEntries={weeklyEntries}
+            setEntryData={setEntryData}
+            handleDialogOpen={handleOpen}
+          />
+        </RowContext.Provider>
+      </ModeContext.Provider>
 
       <EntryDialog
         open={open}
         handleClose={handleClose}
         entry={entryData}
         setEntry={setEntryData}
-        selectedGoal={selectedGoal}
-        setSelectedGoal={setSelectedGoal}
+        mode={mode}
       />
     </div>
   );

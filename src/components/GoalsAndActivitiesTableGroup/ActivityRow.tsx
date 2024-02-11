@@ -11,7 +11,6 @@ import GoalTrackerIcon from '../../assets/GoalTrackerIcon.png';
 import { RowContext } from '../../pages/Home';
 
 async function postData(activityId: number) {
-  console.log(activityId);
   await flipTargeting(activityId);
 }
 

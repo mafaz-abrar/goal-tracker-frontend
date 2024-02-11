@@ -90,7 +90,10 @@ export type WeeklyEntry = {
   sundayTime: TimeSpent;
 };
 
-function getDateObjectFromTimeString(timeString: string, date: Date): Date {
+export function getDateObjectFromTimeString(
+  timeString: string,
+  date: Date
+): Date {
   const elements = timeString.split(':');
   const hours = elements[0];
   const minutes = elements[1];
@@ -115,8 +118,6 @@ export async function getWeeklyEntriesForDate(
   const data = camelcaseKeysDeep(await response.json());
 
   const returnVal = data.map((weeklyEntry: SimpleWeeklyEntry) => {
-    console.log(weeklyEntry);
-
     return {
       goalName: weeklyEntry.goalName,
       activity: weeklyEntry.activity,
@@ -153,8 +154,6 @@ export async function getAllEntries(): Promise<DayWithExpandedEntries[]> {
     (dayWithExpandedEntry: SimpleDayWithExpandedEntries) => {
       const processedEntries = dayWithExpandedEntry.expandedEntries.map(
         (expandedEntry: SimpleExpandedEntry) => {
-          console.log(expandedEntry);
-
           return {
             goalName: expandedEntry.goalName,
             activityName: expandedEntry.activityName,
@@ -182,7 +181,6 @@ export async function getAllEntries(): Promise<DayWithExpandedEntries[]> {
     }
   );
 
-  console.log(returnVal);
   return returnVal;
 }
 
@@ -213,8 +211,6 @@ export async function getAllEntriesForWeek(
     (dayWithExpandedEntry: SimpleDayWithExpandedEntries) => {
       const processedEntries = dayWithExpandedEntry.expandedEntries.map(
         (expandedEntry: SimpleExpandedEntry) => {
-          console.log(expandedEntry);
-
           return {
             goalName: expandedEntry.goalName,
             activityName: expandedEntry.activityName,
@@ -248,7 +244,6 @@ export async function getAllEntriesForWeek(
     }
   );
 
-  console.log(returnVal);
   return returnVal;
 }
 
@@ -266,7 +261,6 @@ export async function getAllEntriesForActivity(
 
 export async function addNewEntry(entry: Entry) {
   const formData = new FormData();
-  console.log(entry);
 
   formData.append('activity_id', entry.activityId.toString());
   formData.append('date', dayjs(entry.date).format('YYYY-MM-DD'));
@@ -276,9 +270,6 @@ export async function addNewEntry(entry: Entry) {
     formData.append('start_time', dayjs(entry.startTime).format('HH:mm:ss'));
   if (entry.endTime)
     formData.append('end_time', dayjs(entry.endTime).format('HH:mm:ss'));
-
-  console.log(formData.get('activity_id'));
-  console.log(entry.startTime);
 
   const response = await fetch(
     `http://goal-tracker-backend/api/entry_process.php?mode=add`,
@@ -341,4 +332,28 @@ export async function getAllGoals() {
   const response = await fetch(`http://goal-tracker-backend/api/all_goals.php`);
 
   return camelcaseKeysDeep(await response.json());
+}
+
+export async function updateEntry(entry: Entry) {
+  const formData = new FormData();
+
+  formData.append('entry_id', entry.entryId.toString());
+  formData.append('activity_id', entry.activityId.toString());
+  formData.append('date', dayjs(entry.date).format('YYYY-MM-DD'));
+  formData.append('task_description', entry.taskDescription);
+  formData.append('hours', entry.timeSpent.toString());
+  if (entry.startTime)
+    formData.append('start_time', dayjs(entry.startTime).format('HH:mm:ss'));
+  if (entry.endTime)
+    formData.append('end_time', dayjs(entry.endTime).format('HH:mm:ss'));
+
+  const response = await fetch(
+    `http://goal-tracker-backend/api/entry_process.php?mode=edit`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  return await camelcaseKeysDeep(response.json());
 }

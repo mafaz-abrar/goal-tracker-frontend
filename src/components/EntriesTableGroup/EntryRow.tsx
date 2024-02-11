@@ -4,33 +4,27 @@ import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { useContext } from 'react';
-import {
-  Entry,
-  ExpandedEntry,
-  Goal,
-  deleteEntry,
-} from '../../api/api-interface';
-import { RowContext } from '../../pages/Home';
+import { Entry, ExpandedEntry, deleteEntry } from '../../api/api-interface';
+import { ModeContext, RowContext } from '../../pages/Home';
+import { EntryDialogMode } from '../Dialogs/EntryDialog';
 
 async function postDelete(entryId: number) {
-  console.log(entryId);
   await deleteEntry(entryId);
 }
 
 interface EntryRowProps {
   expandedEntry: ExpandedEntry;
   setEntryData: React.Dispatch<React.SetStateAction<Partial<Entry>>>;
-  setSelectedGoal: React.Dispatch<React.SetStateAction<Goal | null>>;
   handleDialogOpen: () => void;
 }
 
 export default function EntryRow({
   expandedEntry,
   setEntryData,
-  setSelectedGoal,
   handleDialogOpen,
 }: EntryRowProps) {
   const { setFlipped } = useContext(RowContext);
+  const { setMode } = useContext(ModeContext);
 
   return (
     <TableRow>
@@ -49,11 +43,7 @@ export default function EntryRow({
         <IconButton
           onClick={() => {
             setEntryData(expandedEntry.entry);
-            setSelectedGoal({
-              goalId: expandedEntry.goalId,
-              goalName: expandedEntry.goalName,
-            });
-
+            setMode(EntryDialogMode.EditMode);
             handleDialogOpen();
           }}
         >

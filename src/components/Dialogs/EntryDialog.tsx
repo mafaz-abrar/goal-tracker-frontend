@@ -13,13 +13,21 @@ import TimeSpent from '../../api/TimeSpent';
 import {
   Activity,
   Entry,
-  Goal,
   GoalWithActivities,
   addNewEntry,
   getAllGoalsAndActivities,
+  updateEntry,
 } from '../../api/api-interface';
-import { validateEntryForAdd } from '../../validators/entry-validator';
+import {
+  validateEntryForAdd,
+  validateEntryForEdit,
+} from '../../validators/entry-validator';
 import ErrorHandler from '../ErrorHandler/ErrorHandler';
+
+export enum EntryDialogMode {
+  AddMode,
+  EditMode,
+}
 
 function findGoalFromActivityId(
   goals: GoalWithActivities[],
@@ -50,12 +58,15 @@ interface EntryDialogProps {
   handleClose: () => void;
   entry: Partial<Entry>;
   setEntry: React.Dispatch<React.SetStateAction<Partial<Entry>>>;
-  selectedGoal: Goal | null;
-  setSelectedGoal: React.Dispatch<React.SetStateAction<Goal | null>>;
+  mode: EntryDialogMode;
 }
 
-async function postData(entry: Entry) {
+async function addEntry(entry: Entry) {
   return addNewEntry(entry);
+}
+
+async function editEntry(entry: Entry) {
+  return updateEntry(entry);
 }
 
 type GoalOption = GoalWithActivities;
@@ -66,6 +77,7 @@ export default function EntryDialog({
   handleClose,
   entry,
   setEntry,
+  mode,
 }: EntryDialogProps) {
   const [goalOptions, setGoalOptions] = useState<GoalOption[]>([]);
   const [activityOptions, setActivityOptions] = useState<ActivityOption[]>([]);
@@ -78,10 +90,6 @@ export default function EntryDialog({
   const [timeSpentString, setTimeSpentString] = useState<string>('');
 
   const [error, setError] = useState<string>('');
-
-  function clearData() {
-    setEntry({});
-  }
 
   // Default: Gets all goal data.
   useEffect(() => {
@@ -217,11 +225,15 @@ export default function EntryDialog({
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setTimeSpentString(event.target.value);
 
-            if (TimeSpent.validateTimeString(timeSpentString)) {
+            // This has to be event.target.value and not the state variable since for some reason,
+            // the state variable hasn't been set yet by the time execution reaches this line, even
+            // though setState was called earlier.
+            if (TimeSpent.validateTimeString(event.target.value)) {
               setEntry((entry) => ({
                 ...entry,
-                timeSpent:
-                  TimeSpent.buildFromFormattedTimeString(timeSpentString),
+                timeSpent: TimeSpent.buildFromFormattedTimeString(
+                  event.target.value
+                ),
               }));
             }
           }}
@@ -230,37 +242,44 @@ export default function EntryDialog({
         <TimePicker
           label='Start Time'
           sx={{ width: '100%', marginTop: '10px' }}
-          value={entry.startTime}
-          onChange={(newStartTime) =>
-            setEntry((entry) => ({ ...entry, startTime: newStartTime }))
-          }
+          value={dayjs(entry.startTime)}
+          onChange={(newStartTime) => {
+            setEntry((entry) => ({
+              ...entry,
+              startTime: newStartTime?.toDate(),
+            }));
+          }}
         />
 
         <TimePicker
           label='End Time '
           sx={{ width: '100%', marginTop: '10px' }}
-          value={entry.endTime}
+          value={dayjs(entry.endTime)}
           onChange={(newEndTime) =>
-            setEntry((entry) => ({ ...entry, endTime: newEndTime }))
+            setEntry((entry) => ({ ...entry, endTime: newEndTime?.toDate() }))
           }
         />
       </DialogContent>
       <DialogActions>
         <Button
           onClick={() => {
-            clearData();
             onClose();
           }}
         >
           Cancel
         </Button>
         <Button
-          onClick={() => {
+          onClick={async () => {
             // For Edit mode, pass in an Entry, then set State directly, don't build an Entry.
             try {
-              const entryForPost = validateEntryForAdd(entry);
-              postData(entryForPost);
-              clearData();
+              if (mode === EntryDialogMode.AddMode) {
+                const entryForPost = validateEntryForAdd(entry);
+                await addEntry(entryForPost);
+              } else if (mode === EntryDialogMode.EditMode) {
+                const entryForPost = validateEntryForEdit(entry);
+                await editEntry(entryForPost);
+              }
+
               onClose();
             } catch (err) {
               if (err instanceof Error) {

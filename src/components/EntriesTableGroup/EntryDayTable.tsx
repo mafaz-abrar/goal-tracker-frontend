@@ -1,8 +1,4 @@
-import AddIcon from '@mui/icons-material/Add';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,20 +9,18 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { DayWithExpandedEntries, Entry, Goal } from '../../api/api-interface';
+import { DayWithExpandedEntries, Entry } from '../../api/api-interface';
 import EntryRow from './EntryRow';
 
 interface EntryTableProps {
   day: DayWithExpandedEntries;
   setEntryData: React.Dispatch<React.SetStateAction<Partial<Entry>>>;
-  setSelectedGoal: React.Dispatch<React.SetStateAction<Goal | null>>;
   handleDialogOpen: () => void;
 }
 
 export default function EntryTable({
   day,
   setEntryData,
-  setSelectedGoal,
   handleDialogOpen,
 }: EntryTableProps) {
   const [open, setOpen] = useState(false);
@@ -43,21 +37,11 @@ export default function EntryTable({
             color: 'white',
           }}
         >
-          <TableCell sx={{ width: '5%' }}>
-            <IconButton
-              aria-label='expand row'
-              size='small'
-              sx={{ color: 'white' }}
-              onClick={() => setOpen(!open)}
-            >
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-          </TableCell>
           <TableCell
             sx={{
               width: '90%',
-              textAlign: 'left',
               color: 'white',
+              textAlign: 'center',
               '&:hover': {
                 color: 'rgba(180,180,180,1)',
                 cursor: 'pointer',
@@ -66,11 +50,6 @@ export default function EntryTable({
             onClick={() => setOpen(!open)}
           >
             {dayjs(day.date).format('dddd, DD MMM YYYY')}
-          </TableCell>
-          <TableCell>
-            <IconButton sx={{ color: 'white' }}>
-              <AddIcon />
-            </IconButton>
           </TableCell>
         </TableRow>
         <TableRow>
@@ -90,12 +69,12 @@ export default function EntryTable({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {day.expandedEntries.map((expandedEntry) => (
+                  {day.expandedEntries.map((expandedEntry, index) => (
                     <EntryRow
+                      key={index}
                       expandedEntry={expandedEntry}
                       setEntryData={setEntryData}
                       handleDialogOpen={handleDialogOpen}
-                      setSelectedGoal={setSelectedGoal}
                     />
                   ))}
                 </TableBody>

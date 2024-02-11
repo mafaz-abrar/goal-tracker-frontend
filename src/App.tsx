@@ -10,6 +10,10 @@ import PageNotFound from './pages/PageNotFound';
 
 import 'dayjs/locale/en-gb';
 
+// The Localization Provider of AdapterDayjs means that all controlled Date and TimePicker values
+// need to be Dayjs values, convert to and from the Date object when storing to state. Also, the
+// pickers will try to get a default value of now. See
+// https://mui.com/x/react-date-pickers/base-concepts/#reference-date-when-no-value-is-defined
 export default function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-au'>

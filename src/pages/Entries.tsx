@@ -4,23 +4,25 @@ import { useEffect, useState } from 'react';
 import {
   DayWithExpandedEntries,
   Entry,
-  Goal,
   getAllEntriesForWeek,
 } from '../api/api-interface';
-import EntryDialog from '../components/Dialogs/EntryDialog';
+import EntryDialog, {
+  EntryDialogMode,
+} from '../components/Dialogs/EntryDialog';
 import EntryTableGroup from '../components/EntriesTableGroup/EntryTableGroup';
-import { RowContext } from './Home';
+import { ModeContext, RowContext } from './Home';
 
 export default function Entries() {
   const [data, setData] = useState<DayWithExpandedEntries[]>([]);
   const [filterDate, setFilterDate] = useState<Dayjs>(dayjs());
   const [flipped, setFlipped] = useState<boolean>(false);
-  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [entryData, setEntryData] = useState<Partial<Entry>>({});
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const [mode, setMode] = useState<EntryDialogMode>(EntryDialogMode.AddMode);
 
   useEffect(() => {
     async function getEntries() {
@@ -29,7 +31,7 @@ export default function Entries() {
     }
 
     getEntries();
-  }, [filterDate, flipped]);
+  }, [filterDate, flipped, open]);
 
   return (
     <div
@@ -42,8 +44,7 @@ export default function Entries() {
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
-
+          justifyContent: 'center',
           paddingTop: '10px',
           paddingBottom: '10px',
           alignItems: 'center',
@@ -56,14 +57,6 @@ export default function Entries() {
         >
           My Entries
         </h1>
-        <Button
-          sx={{
-            height: '7vh',
-          }}
-          variant='outlined'
-        >
-          Add Entry
-        </Button>
       </div>
       <div
         style={{
@@ -105,22 +98,22 @@ export default function Entries() {
         </Button>
       </div>
 
-      <RowContext.Provider value={{ setFlipped }}>
-        <EntryTableGroup
-          days={data}
-          setEntryData={setEntryData}
-          handleDialogOpen={handleOpen}
-          setSelectedGoal={setSelectedGoal}
-        />
-      </RowContext.Provider>
+      <ModeContext.Provider value={{ setMode }}>
+        <RowContext.Provider value={{ setFlipped }}>
+          <EntryTableGroup
+            days={data}
+            setEntryData={setEntryData}
+            handleDialogOpen={handleOpen}
+          />
+        </RowContext.Provider>
+      </ModeContext.Provider>
 
       <EntryDialog
         open={open}
         handleClose={handleClose}
         entry={entryData}
         setEntry={setEntryData}
-        selectedGoal={selectedGoal}
-        setSelectedGoal={setSelectedGoal}
+        mode={mode}
       />
     </div>
   );
