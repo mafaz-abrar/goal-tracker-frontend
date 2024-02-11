@@ -50,7 +50,9 @@ export default function GoalsAndActivities() {
   useEffect(() => {
     async function getData() {
       const response = await getAllGoalsAndActivities();
-
+      response.sort((a, b: GoalWithActivities) => {
+        return a.goal.goalName < b.goal.goalName ? -1 : 1;
+      });
       setGoalsWithActivities(response);
     }
     getData();

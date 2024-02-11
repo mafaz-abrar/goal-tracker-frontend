@@ -1,6 +1,4 @@
 import AddIcon from '@mui/icons-material/Add';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
@@ -18,7 +16,7 @@ interface GoalGroupProps {
 }
 
 export default function GoalGroup({ goalWithActivities }: GoalGroupProps) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
     <TableContainer
@@ -33,20 +31,10 @@ export default function GoalGroup({ goalWithActivities }: GoalGroupProps) {
               color: 'white',
             }}
           >
-            <TableCell sx={{ width: '5%' }}>
-              <IconButton
-                aria-label='expand row'
-                size='small'
-                sx={{ color: 'white' }}
-                onClick={() => setOpen(!open)}
-              >
-                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-              </IconButton>
-            </TableCell>
             <TableCell
               sx={{
-                width: '90%',
-                textAlign: 'left',
+                width: '95%',
+                textAlign: 'center',
                 color: 'white',
 
                 '&:hover': {
