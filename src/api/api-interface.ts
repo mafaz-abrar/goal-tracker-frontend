@@ -481,3 +481,11 @@ export async function deleteGoal(goalId: number) {
 
   return await response.json();
 }
+
+export async function getCurrentScore(): Promise<number> {
+  const response = await fetch(
+    `http://goal-tracker-backend/api/get_current_score.php`
+  );
+
+  return +(await response.json());
+}

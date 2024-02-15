@@ -3,6 +3,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import { useConfirm } from 'material-ui-confirm';
 import { useContext } from 'react';
 import { Entry, ExpandedEntry, deleteEntry } from '../../api/api-interface';
 import { ModeContext, RowContext } from '../../pages/Home';
@@ -25,6 +26,7 @@ export default function EntryRow({
 }: EntryRowProps) {
   const { setFlipped } = useContext(RowContext);
   const { setMode } = useContext(ModeContext);
+  const confirm = useConfirm();
 
   return (
     <TableRow>
@@ -53,8 +55,14 @@ export default function EntryRow({
       <TableCell>
         <IconButton
           onClick={async () => {
-            await postDelete(expandedEntry.entry.entryId);
-            setFlipped((val) => !val);
+            try {
+              await confirm({ description: 'This action is permanent!' });
+              await postDelete(expandedEntry.entry.entryId);
+            } catch {
+              // fuck me... how tf am i supposed to handle ACTUAL errors... bitch
+            } finally {
+              setFlipped((val) => !val);
+            }
           }}
         >
           <DeleteIcon />

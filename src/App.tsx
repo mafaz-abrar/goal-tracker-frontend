@@ -2,7 +2,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import 'dayjs/locale/en-au';
 import { ConfirmProvider } from 'material-ui-confirm';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import NavBar from './components/NavBar/NavBar';
 import Entries from './pages/Entries';
 import GoalsAndActivities from './pages/GoalsAndActivities';
@@ -19,7 +19,7 @@ export default function App() {
   return (
     <ConfirmProvider>
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-au'>
-        <BrowserRouter>
+        <HashRouter>
           <Routes>
             <Route path='/' element={<NavBar />}>
               <Route index element={<Home />} />
@@ -28,7 +28,7 @@ export default function App() {
               <Route path='*' element={<PageNotFound />} />
             </Route>
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
       </LocalizationProvider>
     </ConfirmProvider>
   );

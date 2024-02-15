@@ -11,6 +11,7 @@ import TimeSpent from '../api/TimeSpent';
 import {
   Entry,
   WeeklyEntry,
+  getCurrentScore,
   getWeeklyEntriesForDate,
 } from '../api/api-interface';
 import EntryDialog, {
@@ -46,11 +47,15 @@ export default function Home() {
   const handleClose = () => setOpen(false);
 
   const [mode, setMode] = useState<EntryDialogMode>(EntryDialogMode.AddMode);
+  const [currentScore, setCurrentScore] = useState<number>();
 
   useEffect(() => {
     async function getData() {
       const data = await getWeeklyEntriesForDate(filterDate.toDate());
       setWeeklyEntries(data);
+
+      const score = await getCurrentScore();
+      setCurrentScore(score);
     }
 
     getData();
@@ -73,6 +78,7 @@ export default function Home() {
           alignItems: 'center',
         }}
       >
+        <h3>This Week's Score: {currentScore}</h3>
         <h1
           style={{
             fontFamily: 'Nunito',
