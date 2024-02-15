@@ -4,14 +4,27 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import { useConfirm } from 'material-ui-confirm';
 import { useContext } from 'react';
-import { Activity, flipTargeting } from '../../api/api-interface';
+import {
+  Activity,
+  deleteActivity,
+  flipTargeting,
+} from '../../api/api-interface';
 import GoalTrackerDisabledIcon from '../../assets/GoalTrackerDisabledIcon.png';
 import GoalTrackerIcon from '../../assets/GoalTrackerIcon.png';
+import {
+  ActivityMode,
+  GoalsAndActivitiesContext,
+} from '../../pages/GoalsAndActivities';
 import { RowContext } from '../../pages/Home';
 
 async function postData(activityId: number) {
   await flipTargeting(activityId);
+}
+
+async function postDelete(activityId: number) {
+  await deleteActivity(activityId);
 }
 
 interface ActivityRowProps {
@@ -20,6 +33,12 @@ interface ActivityRowProps {
 
 export default function ActivityRow({ activity }: ActivityRowProps) {
   const { setFlipped } = useContext(RowContext);
+
+  const { handleOpenActivity, setActivityData, setActivityMode } = useContext(
+    GoalsAndActivitiesContext
+  );
+
+  const confirm = useConfirm();
 
   return (
     <TableRow>
@@ -49,12 +68,29 @@ export default function ActivityRow({ activity }: ActivityRowProps) {
 
       <TableCell sx={{ textAlign: 'center' }}>{activity.weighting}</TableCell>
       <TableCell>
-        <IconButton>
+        <IconButton
+          onClick={() => {
+            setActivityMode(ActivityMode.EditMode);
+            setActivityData(activity);
+            handleOpenActivity();
+          }}
+        >
           <EditIcon />
         </IconButton>
       </TableCell>
       <TableCell>
-        <IconButton>
+        <IconButton
+          onClick={async () => {
+            try {
+              await confirm({ description: 'This action is permanent!' });
+              await postDelete(activity.activityId);
+            } catch {
+              // fuck me... how tf am i supposed to handle ACTUAL errors... bitch
+            } finally {
+              setFlipped((val) => !val);
+            }
+          }}
+        >
           <DeleteIcon />
         </IconButton>
       </TableCell>

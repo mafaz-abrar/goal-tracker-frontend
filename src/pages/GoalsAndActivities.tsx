@@ -1,12 +1,54 @@
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { useEffect, useState } from 'react';
 import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useEffect,
+  useState,
+} from 'react';
+import {
+  Activity,
+  Goal,
   GoalWithActivities,
   getAllGoalsAndActivities,
 } from '../api/api-interface';
+import ActivityDialog from '../components/Dialogs/ActivityDialog';
+import GoalDialog from '../components/Dialogs/GoalDialog';
 import GoalsAndActivitiesTableGroup from '../components/GoalsAndActivitiesTableGroup/GoalsAndActivitiesTableGroup';
 import { RowContext } from './Home';
+
+export enum GoalMode {
+  AddMode,
+  EditMode,
+}
+
+export enum ActivityMode {
+  AddMode,
+  EditMode,
+}
+interface GoalsAndActivitiesContextType {
+  setActivityData: Dispatch<SetStateAction<Partial<Activity>>>;
+  setGoalData: Dispatch<SetStateAction<Partial<Goal>>>;
+  handleOpenActivity: () => void;
+  handleOpenGoal: () => void;
+  goalMode: GoalMode;
+  setGoalMode: Dispatch<SetStateAction<GoalMode>>;
+  activityMode: ActivityMode;
+  setActivityMode: Dispatch<SetStateAction<ActivityMode>>;
+}
+
+export const GoalsAndActivitiesContext =
+  createContext<GoalsAndActivitiesContextType>({
+    setActivityData: () => {},
+    setGoalData: () => {},
+    handleOpenActivity: () => {},
+    handleOpenGoal: () => {},
+    goalMode: GoalMode.AddMode,
+    setGoalMode: () => {},
+    activityMode: ActivityMode.AddMode,
+    setActivityMode: () => {},
+  });
 
 function filterGoalsBySearchTerm(
   goalsWithActivities: GoalWithActivities[],
@@ -45,6 +87,24 @@ export default function GoalsAndActivities() {
   const [goalsWithActivities, setGoalsWithActivities] = useState<
     GoalWithActivities[]
   >([]);
+
+  const [goalData, setGoalData] = useState<Partial<Goal>>({});
+  const [activityData, setActivityData] = useState<Partial<Activity>>({});
+
+  const [openGoal, setOpenGoal] = useState(false);
+  const handleOpenGoal = () => setOpenGoal(true);
+  const handleCloseGoal = () => setOpenGoal(false);
+
+  const [goalMode, setGoalMode] = useState<GoalMode>(GoalMode.AddMode);
+
+  const [openActivity, setOpenActivity] = useState(false);
+  const handleOpenActivity = () => setOpenActivity(true);
+  const handleCloseActivity = () => setOpenActivity(false);
+
+  const [activityMode, setActivityMode] = useState<ActivityMode>(
+    ActivityMode.AddMode
+  );
+
   const [flipped, setFlipped] = useState<boolean>(false);
 
   useEffect(() => {
@@ -56,7 +116,7 @@ export default function GoalsAndActivities() {
       setGoalsWithActivities(response);
     }
     getData();
-  }, [flipped]);
+  }, [flipped, openActivity, openGoal]);
 
   return (
     <div
@@ -88,6 +148,11 @@ export default function GoalsAndActivities() {
             height: '7vh',
           }}
           variant='outlined'
+          onClick={() => {
+            setGoalMode(GoalMode.AddMode);
+            setGoalData({});
+            handleOpenGoal();
+          }}
         >
           Add Goal
         </Button>
@@ -101,14 +166,38 @@ export default function GoalsAndActivities() {
         }}
       />
 
-      <RowContext.Provider value={{ setFlipped }}>
-        <GoalsAndActivitiesTableGroup
-          goalsWithActivities={filterGoalsBySearchTerm(
-            goalsWithActivities,
-            searchTerm
-          )}
-        />
-      </RowContext.Provider>
+      <GoalsAndActivitiesContext.Provider
+        value={{
+          setActivityData,
+          setGoalData,
+          handleOpenActivity,
+          handleOpenGoal,
+          goalMode,
+          setGoalMode,
+          activityMode,
+          setActivityMode,
+        }}
+      >
+        <RowContext.Provider value={{ setFlipped }}>
+          <GoalsAndActivitiesTableGroup
+            goalsWithActivities={filterGoalsBySearchTerm(
+              goalsWithActivities,
+              searchTerm
+            )}
+          />
+
+          <GoalDialog
+            open={openGoal}
+            onClose={handleCloseGoal}
+            goal={goalData}
+          />
+          <ActivityDialog
+            open={openActivity}
+            onClose={handleCloseActivity}
+            activity={activityData}
+          />
+        </RowContext.Provider>
+      </GoalsAndActivitiesContext.Provider>
     </div>
   );
 }

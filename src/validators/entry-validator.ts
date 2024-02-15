@@ -41,7 +41,7 @@ export function validateEntryForEdit(partialEntry: Partial<Entry>): Entry {
 
   const entry = checkValidEntry(partialEntry);
 
-  if (entry.entryId === null) error += 'Entry ID must be defined!';
+  if (entry.entryId === null || entry.entryId < 0) error += 'Entry ID invalid!';
 
   if (error !== '') throw new Error(error);
 

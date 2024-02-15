@@ -89,6 +89,7 @@ export default function Home() {
             setEntryData({
               taskDescription: '✅',
               timeSpent: new TimeSpent(5),
+              date: new Date(),
               startTime: new Date(),
               endTime: new Date(new Date().getTime() + 5 * 60000), // Add 5 minutes
             });

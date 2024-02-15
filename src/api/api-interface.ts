@@ -3,6 +3,28 @@ import dayjs from 'dayjs';
 import TimeSpent from './TimeSpent';
 import { API_SERVER } from './config';
 
+/**
+ * We have a core problem with the data structures in this API.
+ *
+ * Looking at the answers in
+ * https://stackoverflow.com/questions/45339065/typescript-empty-object-for-a-typed-variable, we can
+ * see that the goal of adding types is to aid documentation.
+ *
+ * Our problem lies in that we are trying to say two conflicting things with these data structures.
+ * 1. An (e.g.) Entry MUST have the properties X, Y etc. The reasoning behind this decision makes
+ *    sense, a fully defined entry must have an activity Id, task description etc.
+ * 2. However, we are also passing around an entry object as we build up this object. E.g. from the
+ *    weekly entry screen, we populate some properties, then in the dialog we populate the rest. So,
+ *    potentially all the properties for this type may be null.
+ *
+ *    In this case, we should really have created two data structures. One would be a complete
+ *    entry, where some properties are nullable only because we explicitly say they are nullable in
+ *    the complete type (e.g. startTime), while others MUST be included.
+ *
+ *    The second type would be a simpler type where everything is nullable, because it allows us to
+ *    build up the type as we go along.
+ */
+
 export type Goal = {
   goalId: number;
   goalName: string;
@@ -259,20 +281,16 @@ export async function getAllEntriesForActivity(
   return camelcaseKeysDeep(await response.json());
 }
 
-export async function addNewEntry(entry: Entry) {
+export async function addNewActivity(activity: Activity) {
   const formData = new FormData();
 
-  formData.append('activity_id', entry.activityId.toString());
-  formData.append('date', dayjs(entry.date).format('YYYY-MM-DD'));
-  formData.append('task_description', entry.taskDescription);
-  formData.append('hours', entry.timeSpent.toString());
-  if (entry.startTime)
-    formData.append('start_time', dayjs(entry.startTime).format('HH:mm:ss'));
-  if (entry.endTime)
-    formData.append('end_time', dayjs(entry.endTime).format('HH:mm:ss'));
+  formData.append('goal_id', activity.goalId.toString());
+  formData.append('activity_name', activity.activityName);
+  formData.append('targeting', activity.targeting.toString());
+  formData.append('weighting', activity.weighting.toString());
 
   const response = await fetch(
-    `http://goal-tracker-backend/api/entry_process.php?mode=add`,
+    `http://goal-tracker-backend/api/activity_process.php?mode=add`,
     {
       method: 'POST',
       body: formData,
@@ -282,9 +300,58 @@ export async function addNewEntry(entry: Entry) {
   return await camelcaseKeysDeep(response.json());
 }
 
-export async function postActivity(activity: Activity) {}
+export async function updateActivity(activity: Activity) {
+  const formData = new FormData();
 
-export async function postGoal(goal: Goal) {}
+  formData.append('activity_id', activity.activityId.toString());
+  formData.append('goal_id', activity.goalId.toString());
+  formData.append('activity_name', activity.activityName);
+  formData.append('targeting', activity.targeting.toString());
+  formData.append('weighting', activity.weighting.toString());
+
+  const response = await fetch(
+    `http://goal-tracker-backend/api/activity_process.php?mode=edit`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  return await camelcaseKeysDeep(response.json());
+}
+
+export async function addNewGoal(goal: Goal) {
+  const formData = new FormData();
+
+  formData.append('goal_name', goal.goalName);
+
+  const response = await fetch(
+    `http://goal-tracker-backend/api/goal_process.php?mode=add`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  return await camelcaseKeysDeep(response.json());
+}
+
+export async function updateGoal(goal: Goal) {
+  const formData = new FormData();
+
+  formData.append('goal_id', goal.goalId.toString());
+  formData.append('goal_name', goal.goalName);
+
+  const response = await fetch(
+    `http://goal-tracker-backend/api/goal_process.php?mode=edit`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  return await camelcaseKeysDeep(response.json());
+}
 
 export async function deleteEntry(entryId: number) {
   const formData = new FormData();
@@ -300,10 +367,6 @@ export async function deleteEntry(entryId: number) {
 
   return await response.json();
 }
-
-export async function deleteActivity(activityId: number) {}
-
-export async function deleteGoal(goalId: number) {}
 
 export async function flipTargeting(activityId: number) {
   const formData = new FormData();
@@ -328,10 +391,41 @@ export async function getAllActivities() {
   return camelcaseKeysDeep(await response.json());
 }
 
-export async function getAllGoals() {
+export async function getAllGoals(): Promise<Goal[]> {
   const response = await fetch(`http://goal-tracker-backend/api/all_goals.php`);
 
   return camelcaseKeysDeep(await response.json());
+}
+
+export async function getAllActivitiesForGoalId(goalId: number) {
+  const response = await fetch(
+    `http://goal-tracker-backend/api/all_activities_for_goal.php?goal_id=${goalId}`
+  );
+
+  return camelcaseKeysDeep(await response.json());
+}
+
+export async function addNewEntry(entry: Entry) {
+  const formData = new FormData();
+
+  formData.append('activity_id', entry.activityId.toString());
+  formData.append('date', dayjs(entry.date).format('YYYY-MM-DD'));
+  formData.append('task_description', entry.taskDescription);
+  formData.append('hours', entry.timeSpent.toString());
+  if (entry.startTime)
+    formData.append('start_time', dayjs(entry.startTime).format('HH:mm:ss'));
+  if (entry.endTime)
+    formData.append('end_time', dayjs(entry.endTime).format('HH:mm:ss'));
+
+  const response = await fetch(
+    `http://goal-tracker-backend/api/entry_process.php?mode=add`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  return await camelcaseKeysDeep(response.json());
 }
 
 export async function updateEntry(entry: Entry) {
@@ -356,4 +450,34 @@ export async function updateEntry(entry: Entry) {
   );
 
   return await camelcaseKeysDeep(response.json());
+}
+
+export async function deleteActivity(activityId: number) {
+  const formData = new FormData();
+  formData.append('activity_id', activityId.toString());
+
+  const response = await fetch(
+    `http://goal-tracker-backend/api/activity_process.php?mode=delete`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  return await response.json();
+}
+
+export async function deleteGoal(goalId: number) {
+  const formData = new FormData();
+  formData.append('goal_id', goalId.toString());
+
+  const response = await fetch(
+    `http://goal-tracker-backend/api/goal_process.php?mode=delete`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  return await response.json();
 }
