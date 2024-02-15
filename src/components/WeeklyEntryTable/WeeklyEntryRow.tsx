@@ -18,6 +18,14 @@ const dataItemStyleProps = {
   textAlign: 'center',
 };
 
+const todayStyleProps = {
+  backgroundColor: '#add8e6',
+};
+
+function getToday() {
+  return new Date().getDay();
+}
+
 interface WeeklyEntryProps {
   weeklyEntry: WeeklyEntry;
   setEntryData: React.Dispatch<React.SetStateAction<Partial<Entry>>>;
@@ -67,37 +75,79 @@ export default function WeeklyEntryRow({
         <TableCell className={styles.nameItem}>
           {weeklyEntry.activity.activityName}
         </TableCell>
-        <TableCell align='center' sx={dataItemStyleProps}>
+        <TableCell
+          align='center'
+          sx={[
+            dataItemStyleProps,
+            ...(getToday() === 1 ? [todayStyleProps] : []),
+          ]}
+        >
           {weeklyEntry.mondayTime.getTotalMinutes() === 0
             ? ''
             : weeklyEntry.mondayTime.toString()}
         </TableCell>
-        <TableCell align='center' sx={dataItemStyleProps}>
+        <TableCell
+          align='center'
+          sx={[
+            dataItemStyleProps,
+            ...(getToday() === 2 ? [todayStyleProps] : []),
+          ]}
+        >
           {weeklyEntry.tuesdayTime.getTotalMinutes() === 0
             ? ''
             : weeklyEntry.tuesdayTime.toString()}
         </TableCell>
-        <TableCell align='center' sx={dataItemStyleProps}>
+        <TableCell
+          align='center'
+          sx={[
+            dataItemStyleProps,
+            ...(getToday() === 3 ? [todayStyleProps] : []),
+          ]}
+        >
           {weeklyEntry.wednesdayTime.getTotalMinutes() === 0
             ? ''
             : weeklyEntry.wednesdayTime.toString()}
         </TableCell>
-        <TableCell align='center' sx={dataItemStyleProps}>
+        <TableCell
+          align='center'
+          sx={[
+            dataItemStyleProps,
+            ...(getToday() === 4 ? [todayStyleProps] : []),
+          ]}
+        >
           {weeklyEntry.thursdayTime.getTotalMinutes() === 0
             ? ''
             : weeklyEntry.thursdayTime.toString()}
         </TableCell>
-        <TableCell align='center' sx={dataItemStyleProps}>
+        <TableCell
+          align='center'
+          sx={[
+            dataItemStyleProps,
+            ...(getToday() === 5 ? [todayStyleProps] : []),
+          ]}
+        >
           {weeklyEntry.fridayTime.getTotalMinutes() === 0
             ? ''
             : weeklyEntry.fridayTime.toString()}
         </TableCell>
-        <TableCell align='center' sx={dataItemStyleProps}>
+        <TableCell
+          align='center'
+          sx={[
+            dataItemStyleProps,
+            ...(getToday() === 6 ? [todayStyleProps] : []),
+          ]}
+        >
           {weeklyEntry.saturdayTime.getTotalMinutes() === 0
             ? ''
             : weeklyEntry.saturdayTime.toString()}
         </TableCell>
-        <TableCell align='center' sx={dataItemStyleProps}>
+        <TableCell
+          align='center'
+          sx={[
+            dataItemStyleProps,
+            ...(getToday() === 0 ? [todayStyleProps] : []),
+          ]}
+        >
           {weeklyEntry.sundayTime.getTotalMinutes() === 0
             ? ''
             : weeklyEntry.sundayTime.toString()}

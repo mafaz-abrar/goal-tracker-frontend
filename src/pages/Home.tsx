@@ -54,7 +54,7 @@ export default function Home() {
       const data = await getWeeklyEntriesForDate(filterDate.toDate());
       setWeeklyEntries(data);
 
-      const score = await getCurrentScore();
+      const score = await getCurrentScore(filterDate.toDate());
       setCurrentScore(score);
     }
 

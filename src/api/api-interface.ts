@@ -482,9 +482,11 @@ export async function deleteGoal(goalId: number) {
   return await response.json();
 }
 
-export async function getCurrentScore(): Promise<number> {
+export async function getCurrentScore(filterDate: Date): Promise<number> {
   const response = await fetch(
-    `http://goal-tracker-backend/api/get_current_score.php`
+    `http://goal-tracker-backend/api/get_current_score.php?filter_date=${dayjs(
+      filterDate
+    ).format('YYYY-MM-DD')}`
   );
 
   return +(await response.json());
