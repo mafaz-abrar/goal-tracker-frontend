@@ -50,6 +50,7 @@ export default function ActivityDialog({
   const { setActivityData, activityMode } = useContext(
     GoalsAndActivitiesContext
   );
+  const [weightingString, setWeightingString] = useState<string>('');
 
   useEffect(() => {
     async function getData() {
@@ -65,7 +66,14 @@ export default function ActivityDialog({
     }
   }, [open, activity, goalData]);
 
+  useEffect(() => {
+    if (open && activity.weighting !== null) {
+      setWeightingString(activity.weighting?.toString() ?? '');
+    }
+  }, [open, activity]);
+
   function onExit() {
+    setWeightingString('');
     setError('');
     onClose();
   }
@@ -128,6 +136,7 @@ export default function ActivityDialog({
         </FormGroup>
 
         <TextField
+          error={weightingString !== '' && isNaN(+weightingString)}
           autoFocus
           margin='dense'
           id='name'
@@ -135,13 +144,17 @@ export default function ActivityDialog({
           type='text'
           fullWidth
           variant='filled'
-          value={activity.weighting}
-          onChange={(event) =>
-            setActivityData((prev) => ({
-              ...prev,
-              weighting: +event.target.value,
-            }))
-          }
+          value={weightingString}
+          onChange={(event) => {
+            setWeightingString(event.target.value);
+
+            if (!isNaN(+event.target.value)) {
+              setActivityData((prev) => ({
+                ...prev,
+                weighting: +event.target.value,
+              }));
+            }
+          }}
         />
       </DialogContent>
       <DialogActions>
