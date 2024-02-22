@@ -58,23 +58,6 @@ function filterGoalsBySearchTerm(
     return goalsWithActivities;
   }
 
-  const goalsWithMatchingActivities = goalsWithActivities
-    .map((goalWithActivities) => {
-      const filteredActivities = goalWithActivities.activities.filter(
-        (activity) =>
-          activity.activityName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
-      return {
-        goal: goalWithActivities.goal,
-        activities: filteredActivities,
-      };
-    })
-    .filter((goalWithActivities) => goalWithActivities.activities.length);
-
-  if (goalsWithMatchingActivities.length !== 0)
-    return goalsWithMatchingActivities;
-
   return goalsWithActivities.filter((goalWithActivities) =>
     goalWithActivities.goal.goalName
       .toLowerCase()
@@ -159,7 +142,7 @@ export default function GoalsAndActivities() {
       </div>
       <TextField
         variant='outlined'
-        label='Search'
+        label='Search Goals'
         fullWidth
         onChange={(event) => {
           setSearchTerm(event.target.value);
