@@ -13,18 +13,24 @@ export default function WeeklyEntryHeader() {
         backgroundColor: 'black',
       }}
     >
-      <TableCell></TableCell>
+      <TableCell sx={headerProps}>TARGETING?</TableCell>
       <TableCell
         className={`${styles.nameItem} ${styles.headerCell}`}
         sx={headerProps}
       >
-        Goal Name
+        GOAL
       </TableCell>
       <TableCell
         className={`${styles.nameItem} ${styles.headerCell}`}
         sx={headerProps}
       >
-        Activity Name
+        ACTIVITY
+      </TableCell>
+      <TableCell
+        className={`${styles.nameItem} ${styles.headerCell}`}
+        sx={[headerProps, { textAlign: 'center' }]}
+      >
+        WEIGHTING
       </TableCell>
       <TableCell
         align='center'

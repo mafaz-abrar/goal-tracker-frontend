@@ -20,15 +20,10 @@ export default function WeeklyEntryTable({
   style,
 }: WeeklyEntryTableProps) {
   // TODO: Move this to an outer function: [out of scope for MVP].
-  // Sort by targeting, then goal name, finally activity name.
+  // Sort by weighting, then goal name, finally activity name.
   weeklyEntries.sort((first, second) => {
     let secondMinusFirst = 0;
-    secondMinusFirst =
-      first.activity.targeting === second.activity.targeting
-        ? 0
-        : first.activity.targeting
-        ? -1
-        : 1;
+    secondMinusFirst = second.activity.weighting - first.activity.weighting;
 
     if (secondMinusFirst === 0) {
       secondMinusFirst = first.goalName.localeCompare(second.goalName);

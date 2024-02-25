@@ -47,7 +47,7 @@ export default function Home() {
   const handleClose = () => setOpen(false);
 
   const [mode, setMode] = useState<EntryDialogMode>(EntryDialogMode.AddMode);
-  const [currentScore, setCurrentScore] = useState<number>();
+  const [currentScore, setCurrentScore] = useState<number>(0);
 
   useEffect(() => {
     async function getData() {
@@ -78,7 +78,8 @@ export default function Home() {
           alignItems: 'center',
         }}
       >
-        <h3>This Week's Score: {currentScore}</h3>
+        <h3>Score: {currentScore}</h3>
+
         <h1
           style={{
             fontFamily: 'Nunito',

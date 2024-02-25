@@ -19,7 +19,7 @@ const dataItemStyleProps = {
 };
 
 const todayStyleProps = {
-  backgroundColor: '#add8e6',
+  backgroundColor: 'rgba(26, 198, 255, 0.1)',
 };
 
 function getToday() {
@@ -74,6 +74,37 @@ export default function WeeklyEntryRow({
         </TableCell>
         <TableCell className={styles.nameItem}>
           {weeklyEntry.activity.activityName}
+        </TableCell>
+        <TableCell
+          sx={[
+            weeklyEntry.activity.weighting >= 0
+              ? {
+                  color: 'rgba(0, 102, 255, 0.7)',
+                }
+              : { color: 'red' },
+            {
+              fontWeight: 'bold',
+              textAlign: 'center',
+            },
+          ]}
+        >
+          <span
+            style={{
+              borderStyle: 'solid',
+              borderWidth: '1px',
+              borderRadius: '50%',
+              display: 'inline-block',
+              height: '25px',
+              width: '25px',
+              lineHeight: '25px',
+              borderColor:
+                weeklyEntry.activity.weighting >= 0
+                  ? 'rgba(0, 102, 255, 0.7)'
+                  : 'red',
+            }}
+          >
+            {weeklyEntry.activity.weighting}
+          </span>
         </TableCell>
         <TableCell
           align='center'
