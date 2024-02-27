@@ -2,9 +2,45 @@ import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
+import TimeSpent from '../../api/TimeSpent';
 import { Entry, WeeklyEntry } from '../../api/api-interface';
 import WeeklyEntryHeader from './WeeklyEntryHeader';
 import WeeklyEntryRow from './WeeklyEntryRow';
+import WeeklyEntrySummaryRow, {
+  WeeklyEntrySummary,
+} from './WeeklyEntrySummaryRow';
+
+function summarizeWeeklyEntries(
+  weeklyEntries: WeeklyEntry[]
+): WeeklyEntrySummary {
+  let mondayTotal = new TimeSpent();
+  let tuesdayTotal = new TimeSpent();
+  let wednesdayTotal = new TimeSpent();
+  let thursdayTotal = new TimeSpent();
+  let fridayTotal = new TimeSpent();
+  let saturdayTotal = new TimeSpent();
+  let sundayTotal = new TimeSpent();
+
+  weeklyEntries.forEach((weeklyEntry: WeeklyEntry) => {
+    mondayTotal.addMinutes(weeklyEntry.mondayTime.getTotalMinutes());
+    tuesdayTotal.addMinutes(weeklyEntry.tuesdayTime.getTotalMinutes());
+    wednesdayTotal.addMinutes(weeklyEntry.wednesdayTime.getTotalMinutes());
+    thursdayTotal.addMinutes(weeklyEntry.thursdayTime.getTotalMinutes());
+    fridayTotal.addMinutes(weeklyEntry.fridayTime.getTotalMinutes());
+    saturdayTotal.addMinutes(weeklyEntry.saturdayTime.getTotalMinutes());
+    sundayTotal.addMinutes(weeklyEntry.sundayTime.getTotalMinutes());
+  });
+
+  return {
+    mondayTotal: mondayTotal.toString(),
+    tuesdayTotal: tuesdayTotal.toString(),
+    wednesdayTotal: wednesdayTotal.toString(),
+    thursdayTotal: thursdayTotal.toString(),
+    fridayTotal: fridayTotal.toString(),
+    saturdayTotal: saturdayTotal.toString(),
+    sundayTotal: sundayTotal.toString(),
+  };
+}
 
 interface WeeklyEntryTableProps {
   weeklyEntries: WeeklyEntry[];
@@ -53,6 +89,9 @@ export default function WeeklyEntryTable({
               />
             );
           })}
+          <WeeklyEntrySummaryRow
+            weeklyEntrySummary={summarizeWeeklyEntries(weeklyEntries)}
+          />
         </TableBody>
       </Table>
     </TableContainer>
