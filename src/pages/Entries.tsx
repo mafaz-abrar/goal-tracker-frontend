@@ -27,6 +27,7 @@ export default function Entries() {
   useEffect(() => {
     async function getEntries() {
       const days = await getAllEntriesForWeek(filterDate.toDate());
+      console.log(days);
       setData(days);
     }
 

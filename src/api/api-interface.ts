@@ -228,6 +228,7 @@ export async function getAllEntriesForWeek(
   );
 
   const data = camelcaseKeysDeep(await response.json());
+  console.log(data);
 
   const returnVal = data.map(
     (dayWithExpandedEntry: SimpleDayWithExpandedEntries) => {
@@ -411,7 +412,10 @@ export async function addNewEntry(entry: Entry) {
   formData.append('activity_id', entry.activityId.toString());
   formData.append('date', dayjs(entry.date).format('YYYY-MM-DD'));
   formData.append('task_description', entry.taskDescription);
-  formData.append('hours', entry.timeSpent.toString());
+  formData.append(
+    'time_spent',
+    (entry.timeSpent.getTotalMinutes() * 60).toString()
+  );
   if (entry.startTime)
     formData.append('start_time', dayjs(entry.startTime).format('HH:mm:ss'));
   if (entry.endTime)
@@ -435,7 +439,10 @@ export async function updateEntry(entry: Entry) {
   formData.append('activity_id', entry.activityId.toString());
   formData.append('date', dayjs(entry.date).format('YYYY-MM-DD'));
   formData.append('task_description', entry.taskDescription);
-  formData.append('hours', entry.timeSpent.toString());
+  formData.append(
+    'time_spent',
+    (entry.timeSpent.getTotalMinutes() * 60).toString()
+  );
   if (entry.startTime)
     formData.append('start_time', dayjs(entry.startTime).format('HH:mm:ss'));
   if (entry.endTime)
