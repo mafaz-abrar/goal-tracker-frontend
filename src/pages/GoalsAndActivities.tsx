@@ -73,16 +73,19 @@ function filterGoalsByActivitySearchTerm(
     return goalsWithActivities;
   }
 
-  console.log(searchTerm);
+  return goalsWithActivities
+    .map((goalWithActivities) => {
+      const filteredActivities = goalWithActivities.activities.filter(
+        (activity) =>
+          activity.activityName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
-  const data = goalsWithActivities.filter((goalWithActivities) =>
-    goalWithActivities.activities.filter((activity) =>
-      activity.activityName.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
-
-  console.log(data);
-  return data;
+      return {
+        goal: goalWithActivities.goal,
+        activities: filteredActivities,
+      };
+    })
+    .filter((goalWithActivities) => goalWithActivities.activities.length);
 }
 
 export default function GoalsAndActivities() {
@@ -173,6 +176,9 @@ export default function GoalsAndActivities() {
         variant='outlined'
         label='Search Activities'
         fullWidth
+        sx={{
+          marginTop: '20px',
+        }}
         onChange={(event) => {
           setActivitySearchTerm(event.target.value);
         }}
