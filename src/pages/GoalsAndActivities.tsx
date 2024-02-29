@@ -50,7 +50,7 @@ export const GoalsAndActivitiesContext =
     setActivityMode: () => {},
   });
 
-function filterGoalsBySearchTerm(
+function filterGoalsByGoalSearchTerm(
   goalsWithActivities: GoalWithActivities[],
   searchTerm: string
 ): GoalWithActivities[] {
@@ -65,8 +65,29 @@ function filterGoalsBySearchTerm(
   );
 }
 
+function filterGoalsByActivitySearchTerm(
+  goalsWithActivities: GoalWithActivities[],
+  searchTerm: string
+): GoalWithActivities[] {
+  if (searchTerm.toLowerCase() === '') {
+    return goalsWithActivities;
+  }
+
+  console.log(searchTerm);
+
+  const data = goalsWithActivities.filter((goalWithActivities) =>
+    goalWithActivities.activities.filter((activity) =>
+      activity.activityName.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
+  console.log(data);
+  return data;
+}
+
 export default function GoalsAndActivities() {
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [goalSearchTerm, setGoalSearchTerm] = useState<string>('');
+  const [activitySearchTerm, setActivitySearchTerm] = useState<string>('');
   const [goalsWithActivities, setGoalsWithActivities] = useState<
     GoalWithActivities[]
   >([]);
@@ -145,7 +166,15 @@ export default function GoalsAndActivities() {
         label='Search Goals'
         fullWidth
         onChange={(event) => {
-          setSearchTerm(event.target.value);
+          setGoalSearchTerm(event.target.value);
+        }}
+      />
+      <TextField
+        variant='outlined'
+        label='Search Activities'
+        fullWidth
+        onChange={(event) => {
+          setActivitySearchTerm(event.target.value);
         }}
       />
 
@@ -163,10 +192,17 @@ export default function GoalsAndActivities() {
       >
         <RowContext.Provider value={{ setFlipped }}>
           <GoalsAndActivitiesTableGroup
-            goalsWithActivities={filterGoalsBySearchTerm(
-              goalsWithActivities,
-              searchTerm
-            )}
+            goalsWithActivities={
+              activitySearchTerm === ''
+                ? filterGoalsByGoalSearchTerm(
+                    goalsWithActivities,
+                    goalSearchTerm
+                  )
+                : filterGoalsByActivitySearchTerm(
+                    goalsWithActivities,
+                    activitySearchTerm
+                  )
+            }
           />
 
           <GoalDialog
