@@ -53,6 +53,7 @@ export default function WeeklyEntrySummaryRow({
         >
           TOTAL
         </TableCell>
+        <TableCell align='center'>X</TableCell>
 
         <TableCell
           align='center'

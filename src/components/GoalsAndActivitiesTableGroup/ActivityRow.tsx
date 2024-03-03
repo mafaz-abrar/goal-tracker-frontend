@@ -67,6 +67,11 @@ export default function ActivityRow({ activity }: ActivityRowProps) {
       </TableCell>
 
       <TableCell sx={{ textAlign: 'center' }}>{activity.weighting}</TableCell>
+      <TableCell sx={{ textAlign: 'center' }}>
+        {activity.target.getTotalMinutes() === 0
+          ? 'No Target'
+          : activity.target.toString()}
+      </TableCell>
       <TableCell>
         <IconButton
           onClick={() => {

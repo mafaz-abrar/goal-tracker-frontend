@@ -33,6 +33,12 @@ export default function WeeklyEntryHeader() {
         WEIGHTING
       </TableCell>
       <TableCell
+        className={`${styles.nameItem} ${styles.headerCell}`}
+        sx={[headerProps, { textAlign: 'center' }]}
+      >
+        PROGRESS
+      </TableCell>
+      <TableCell
         align='center'
         className={`${styles.dataItem} ${styles.headerCell}`}
         sx={headerProps}

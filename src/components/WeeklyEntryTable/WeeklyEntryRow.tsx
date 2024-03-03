@@ -10,6 +10,7 @@ import GoalTrackerDisabledIcon from '../../assets/GoalTrackerDisabledIcon.png';
 import GoalTrackerIcon from '../../assets/GoalTrackerIcon.png';
 import { ModeContext, RowContext } from '../../pages/Home';
 import { EntryDialogMode } from '../Dialogs/EntryDialog';
+import LinearProgressWithLabel from '../Progress/LinearProgressWithLabel';
 import styles from './WeeklyEntryTable.module.css';
 
 const dataItemStyleProps = {
@@ -24,6 +25,18 @@ const todayStyleProps = {
 
 function getToday() {
   return new Date().getDay();
+}
+
+function getTotalMinutesInWeek(weeklyEntry: WeeklyEntry): number {
+  let total = 0;
+  total += weeklyEntry.mondayTime.getTotalMinutes();
+  total += weeklyEntry.tuesdayTime.getTotalMinutes();
+  total += weeklyEntry.wednesdayTime.getTotalMinutes();
+  total += weeklyEntry.thursdayTime.getTotalMinutes();
+  total += weeklyEntry.fridayTime.getTotalMinutes();
+  total += weeklyEntry.saturdayTime.getTotalMinutes();
+  total += weeklyEntry.sundayTime.getTotalMinutes();
+  return total;
 }
 
 interface WeeklyEntryProps {
@@ -105,6 +118,25 @@ export default function WeeklyEntryRow({
           >
             {weeklyEntry.activity.weighting}
           </span>
+        </TableCell>
+        <TableCell align='center' sx={dataItemStyleProps}>
+          {weeklyEntry.activity.target.getTotalMinutes() === 0 ? (
+            'No Target'
+          ) : (
+            <LinearProgressWithLabel
+              variant='determinate'
+              value={
+                (getTotalMinutesInWeek(weeklyEntry) /
+                  weeklyEntry.activity.target.getTotalMinutes()) *
+                100
+              }
+              label={
+                new TimeSpent(getTotalMinutesInWeek(weeklyEntry)).toString() +
+                '/' +
+                weeklyEntry.activity.target.toString()
+              }
+            />
+          )}
         </TableCell>
         <TableCell
           align='center'

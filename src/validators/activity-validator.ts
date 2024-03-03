@@ -11,6 +11,8 @@ function checkValidActivity(partialActivity: Partial<Activity>): Activity {
     throw new Error('Targeting undefined!');
   if (partialActivity.weighting === undefined)
     throw new Error('Weighting undefined!');
+  if (partialActivity.target === undefined)
+    throw new Error('Target undefined!');
 
   return {
     activityId: partialActivity.activityId,
@@ -18,6 +20,7 @@ function checkValidActivity(partialActivity: Partial<Activity>): Activity {
     goalId: partialActivity.goalId,
     targeting: partialActivity.targeting,
     weighting: partialActivity.weighting,
+    target: partialActivity.target,
   };
 }
 

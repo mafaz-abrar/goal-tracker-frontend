@@ -7,6 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { useContext, useEffect, useState } from 'react';
+import TimeSpent from '../../api/TimeSpent';
 import {
   Activity,
   Goal,
@@ -44,6 +45,7 @@ export default function ActivityDialog({
   const [selectedGoalOption, setSelectedGoalOption] = useState<Goal | null>(
     null
   );
+  const [targetString, setTargetString] = useState<string>('');
 
   const [error, setError] = useState<string>('');
 
@@ -65,9 +67,16 @@ export default function ActivityDialog({
     }
   }, [open, activity, goalData]);
 
+  useEffect(() => {
+    if (open && activity.target) {
+      setTargetString(activity.target.toString());
+    }
+  }, [open, activity]);
+
   function onExit() {
     setError('');
     onClose();
+    setTargetString('');
   }
 
   return (
@@ -142,6 +151,35 @@ export default function ActivityDialog({
               weighting: +event.target.value,
             }))
           }
+        />
+
+        <TextField
+          error={
+            targetString !== '' && !TimeSpent.validateTimeString(targetString)
+          }
+          autoFocus
+          margin='dense'
+          id='name'
+          label='Target'
+          type='text'
+          fullWidth
+          variant='filled'
+          value={targetString}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setTargetString(event.target.value);
+
+            // This has to be event.target.value and not the state variable since for some reason,
+            // the state variable hasn't been set yet by the time execution reaches this line, even
+            // though setState was called earlier.
+            if (TimeSpent.validateTimeString(event.target.value)) {
+              setActivityData((prev) => ({
+                ...prev,
+                target: TimeSpent.buildFromFormattedTimeString(
+                  event.target.value
+                ),
+              }));
+            }
+          }}
         />
       </DialogContent>
       <DialogActions>

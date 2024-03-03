@@ -30,12 +30,22 @@ export type Goal = {
   goalName: string;
 };
 
+type SimpleActivity = {
+  activityId: number;
+  goalId: number;
+  activityName: string;
+  targeting: boolean;
+  weighting: number;
+  target: number;
+};
+
 export type Activity = {
   activityId: number;
   goalId: number;
   activityName: string;
   targeting: boolean;
   weighting: number;
+  target: TimeSpent;
 };
 
 type SimpleEntry = {
@@ -63,6 +73,11 @@ export type GoalWithActivities = {
   activities: Activity[];
 };
 
+type SimpleGoalWithActivities = {
+  goal: Goal;
+  activities: SimpleActivity[];
+};
+
 type SimpleExpandedEntry = {
   goalName: string;
   activityName: string;
@@ -88,7 +103,7 @@ export type DayWithExpandedEntries = {
 
 type SimpleWeeklyEntry = {
   goalName: string;
-  activity: Activity;
+  activity: SimpleActivity;
 
   mondayTime: number;
   tuesdayTime: number;
@@ -139,19 +154,24 @@ export async function getWeeklyEntriesForDate(
 
   const data = camelcaseKeysDeep(await response.json());
 
-  const returnVal = data.map((weeklyEntry: SimpleWeeklyEntry) => {
-    return {
-      goalName: weeklyEntry.goalName,
-      activity: weeklyEntry.activity,
-      mondayTime: new TimeSpent(weeklyEntry.mondayTime),
-      tuesdayTime: new TimeSpent(weeklyEntry.tuesdayTime),
-      wednesdayTime: new TimeSpent(weeklyEntry.wednesdayTime),
-      thursdayTime: new TimeSpent(weeklyEntry.thursdayTime),
-      fridayTime: new TimeSpent(weeklyEntry.fridayTime),
-      saturdayTime: new TimeSpent(weeklyEntry.saturdayTime),
-      sundayTime: new TimeSpent(weeklyEntry.sundayTime),
-    };
-  });
+  const returnVal: WeeklyEntry[] = data.map(
+    (weeklyEntry: SimpleWeeklyEntry) => {
+      return {
+        goalName: weeklyEntry.goalName,
+        activity: {
+          ...weeklyEntry.activity,
+          target: new TimeSpent(weeklyEntry.activity.target),
+        },
+        mondayTime: new TimeSpent(weeklyEntry.mondayTime),
+        tuesdayTime: new TimeSpent(weeklyEntry.tuesdayTime),
+        wednesdayTime: new TimeSpent(weeklyEntry.wednesdayTime),
+        thursdayTime: new TimeSpent(weeklyEntry.thursdayTime),
+        fridayTime: new TimeSpent(weeklyEntry.fridayTime),
+        saturdayTime: new TimeSpent(weeklyEntry.saturdayTime),
+        sundayTime: new TimeSpent(weeklyEntry.sundayTime),
+      };
+    }
+  );
 
   return returnVal;
 }
@@ -162,7 +182,25 @@ export async function getAllGoalsAndActivities(): Promise<
   const response = await fetch(
     'http://goal-tracker-backend/api/goals_with_activities.php'
   );
-  return camelcaseKeysDeep(await response.json());
+  const data = camelcaseKeysDeep(await response.json());
+
+  const returnVal: GoalWithActivities[] = data.map(
+    (simpleGoalWithActivities: SimpleGoalWithActivities) => {
+      return {
+        goal: simpleGoalWithActivities.goal,
+        activities: simpleGoalWithActivities.activities.map(
+          (activity: SimpleActivity) => {
+            return {
+              ...activity,
+              target: new TimeSpent(activity.target),
+            };
+          }
+        ),
+      };
+    }
+  );
+
+  return returnVal;
 }
 
 export async function getAllEntries(): Promise<DayWithExpandedEntries[]> {
@@ -289,6 +327,10 @@ export async function addNewActivity(activity: Activity) {
   formData.append('activity_name', activity.activityName);
   formData.append('targeting', activity.targeting.toString());
   formData.append('weighting', activity.weighting.toString());
+  formData.append(
+    'target',
+    (activity.target.getTotalMinutes() * 60).toString()
+  );
 
   const response = await fetch(
     `http://goal-tracker-backend/api/activity_process.php?mode=add`,
@@ -309,6 +351,10 @@ export async function updateActivity(activity: Activity) {
   formData.append('activity_name', activity.activityName);
   formData.append('targeting', activity.targeting.toString());
   formData.append('weighting', activity.weighting.toString());
+  formData.append(
+    'target',
+    (activity.target.getTotalMinutes() * 60).toString()
+  );
 
   const response = await fetch(
     `http://goal-tracker-backend/api/activity_process.php?mode=edit`,

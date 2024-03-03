@@ -25,6 +25,7 @@ const activity1: Activity = {
   activityName: 'first activity: get up early every day',
   targeting: true,
   weighting: 3,
+  target: new TimeSpent(0),
 };
 
 const activity2: Activity = {
@@ -33,6 +34,7 @@ const activity2: Activity = {
   activityName: 'second activity: brush my teeth',
   targeting: false,
   weighting: 3,
+  target: new TimeSpent(0),
 };
 
 const activity3: Activity = {
@@ -41,6 +43,7 @@ const activity3: Activity = {
   activityName: 'third activity: resist Mr. Jack',
   targeting: false,
   weighting: 5,
+  target: new TimeSpent(0),
 };
 
 const activity4: Activity = {
@@ -49,6 +52,7 @@ const activity4: Activity = {
   activityName: 'fourth activity: resist tim tams',
   targeting: true,
   weighting: 5,
+  target: new TimeSpent(0),
 };
 
 const entry1: Entry = {
