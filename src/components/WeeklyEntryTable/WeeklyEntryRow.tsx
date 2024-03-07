@@ -120,9 +120,7 @@ export default function WeeklyEntryRow({
           </span>
         </TableCell>
         <TableCell align='center' sx={dataItemStyleProps}>
-          {weeklyEntry.activity.target.getTotalMinutes() === 0 ? (
-            'No Target'
-          ) : (
+          {
             <LinearProgressWithLabel
               variant='determinate'
               value={
@@ -132,11 +130,16 @@ export default function WeeklyEntryRow({
               }
               label={
                 new TimeSpent(getTotalMinutesInWeek(weeklyEntry)).toString() +
-                '/' +
-                weeklyEntry.activity.target.toString()
+                (weeklyEntry.activity.target.getTotalMinutes() > 0
+                  ? '/' + weeklyEntry.activity.target.toString()
+                  : '')
+              }
+              failed={
+                getTotalMinutesInWeek(weeklyEntry) >
+                weeklyEntry.activity.target.getTotalMinutes()
               }
             />
-          )}
+          }
         </TableCell>
         <TableCell
           align='center'

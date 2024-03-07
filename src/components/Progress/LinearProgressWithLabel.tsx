@@ -4,7 +4,7 @@ import LinearProgress, {
 } from '@mui/material/LinearProgress';
 
 export default function LinearProgressWithLabel(
-  props: LinearProgressProps & { label: string }
+  props: LinearProgressProps & { label: string; failed: boolean }
 ) {
   return (
     <Box
@@ -19,12 +19,18 @@ export default function LinearProgressWithLabel(
           gridColumnStart: 1,
           paddingTop: '9px',
           paddingBottom: '9px',
+          color: props.failed ? 'rgb(204, 0, 0)' : 'primary',
         }}
       >
         <LinearProgress
           variant='determinate'
           {...props}
-          sx={{ height: '20px', borderRadius: '10px', width: '100%' }}
+          color='inherit'
+          sx={{
+            height: '20px',
+            borderRadius: '10px',
+            width: '100%',
+          }}
         />
       </Box>
       <Box
