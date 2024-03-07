@@ -222,9 +222,9 @@ export default function WeeklyEntryRow({
                 date: new Date(),
                 activityId: weeklyEntry.activity.activityId,
                 taskDescription: '✅',
-                timeSpent: new TimeSpent(5),
+                timeSpent: new TimeSpent(1),
                 startTime: new Date(),
-                endTime: new Date(new Date().getTime() + 5 * 60000), // Add 5 minutes
+                endTime: new Date(new Date().getTime() + 1 * 60000), // Add 1 minute
               });
               setMode(EntryDialogMode.AddMode);
               handleDialogOpen();

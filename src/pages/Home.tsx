@@ -1,3 +1,4 @@
+import { TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import dayjs, { Dayjs } from 'dayjs';
 import {
@@ -18,6 +19,21 @@ import EntryDialog, {
   EntryDialogMode,
 } from '../components/Dialogs/EntryDialog';
 import WeeklyEntryTable from '../components/WeeklyEntryTable/WeeklyEntryTable';
+
+function filterWeeklyEntries(
+  weeklyEntries: WeeklyEntry[],
+  searchTerm: string
+): WeeklyEntry[] {
+  if (searchTerm.toLowerCase() === '') {
+    return weeklyEntries;
+  }
+
+  return weeklyEntries.filter((weeklyEntry) =>
+    weeklyEntry.activity.activityName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+}
 
 /** TS is so dumb. WTF is this... */
 interface RowContextType {
@@ -48,6 +64,8 @@ export default function Home() {
 
   const [mode, setMode] = useState<EntryDialogMode>(EntryDialogMode.AddMode);
   const [currentScore, setCurrentScore] = useState<number>(0);
+
+  const [activitiesSearchTerm, setActivitiesSearchTerm] = useState<string>('');
 
   useEffect(() => {
     async function getData() {
@@ -95,10 +113,10 @@ export default function Home() {
           onClick={() => {
             setEntryData({
               taskDescription: '✅',
-              timeSpent: new TimeSpent(5),
+              timeSpent: new TimeSpent(1),
               date: new Date(),
               startTime: new Date(),
-              endTime: new Date(new Date().getTime() + 5 * 60000), // Add 5 minutes
+              endTime: new Date(new Date().getTime() + 1 * 60000), // Add 1 minute
             });
             setMode(EntryDialogMode.AddMode);
             handleOpen();
@@ -107,6 +125,7 @@ export default function Home() {
           Add Entry
         </Button>
       </div>
+
       <div
         style={{
           paddingBottom: '20px',
@@ -147,10 +166,25 @@ export default function Home() {
         </Button>
       </div>
 
+      <TextField
+        variant='outlined'
+        label='Search Activities'
+        fullWidth
+        onChange={(event) => {
+          setActivitiesSearchTerm(event.target.value);
+        }}
+        sx={{
+          marginBottom: '10px',
+        }}
+      />
+
       <ModeContext.Provider value={{ setMode }}>
         <RowContext.Provider value={{ setFlipped }}>
           <WeeklyEntryTable
-            weeklyEntries={weeklyEntries}
+            weeklyEntries={filterWeeklyEntries(
+              weeklyEntries,
+              activitiesSearchTerm
+            )}
             setEntryData={setEntryData}
             handleDialogOpen={handleOpen}
           />
