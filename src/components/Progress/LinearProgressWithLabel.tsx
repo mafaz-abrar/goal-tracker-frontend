@@ -19,7 +19,7 @@ export default function LinearProgressWithLabel(
           gridColumnStart: 1,
           paddingTop: '9px',
           paddingBottom: '9px',
-          color: props.failed ? 'rgb(204, 0, 0)' : 'primary',
+          color: props.failed ? 'rgb(89, 0, 179)' : 'primary',
         }}
       >
         <LinearProgress
